@@ -13,7 +13,7 @@ from rest_framework import generics
 from rest_framework import mixins
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.generics import CreateAPIView
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.views import APIView
 from rest_framework import filters
 from sonidosLibresApp.customPagination import StandardResultsSetPagination
@@ -35,6 +35,9 @@ class CustomObtainAuthToken(ObtainAuthToken):
 
 class CreateUserView(CreateAPIView):
 
+    authentication_classes = (SessionAuthentication, BasicAuthentication, TokenAuthentication)
+    permission_classes = (AllowAny)
+
     model = get_user_model()
     permission_classes = [
         permissions.AllowAny # Or anon users can't register
@@ -42,6 +45,9 @@ class CreateUserView(CreateAPIView):
     serializer_class = UserSerializer
 
 class AudioList(mixins.ListModelMixin, mixins.CreateModelMixin, generics.GenericAPIView):
+
+    authentication_classes = (SessionAuthentication, BasicAuthentication, TokenAuthentication)
+    permission_classes = (AllowAny)
 
     queryset = Audio.objects.all()
     serializer_class = AudioSerializer
@@ -58,6 +64,9 @@ class AudioList(mixins.ListModelMixin, mixins.CreateModelMixin, generics.Generic
 
 class AudioDetail(mixins.RetrieveModelMixin, mixins.UpdateModelMixin, mixins.DestroyModelMixin, generics.GenericAPIView):
 
+    authentication_classes = (SessionAuthentication, BasicAuthentication, TokenAuthentication)
+    permission_classes = (AllowAny)
+
     queryset = Audio.objects.all()
     serializer_class = AudioSerializer
 
@@ -71,6 +80,10 @@ class AudioDetail(mixins.RetrieveModelMixin, mixins.UpdateModelMixin, mixins.Des
         return self.destroy(request, *args, **kwargs)
 
 class ArtistList(mixins.ListModelMixin, mixins.CreateModelMixin, generics.GenericAPIView):
+
+    authentication_classes = (SessionAuthentication, BasicAuthentication, TokenAuthentication)
+    permission_classes = (AllowAny)
+
     queryset = Artist.objects.all()
     serializer_class = ArtistSerializer
     pagination_class = StandardResultsSetPagination
@@ -83,6 +96,10 @@ class ArtistList(mixins.ListModelMixin, mixins.CreateModelMixin, generics.Generi
         return self.create(request, *args, **kwargs)
 
 class ArtistDetail(mixins.RetrieveModelMixin, mixins.UpdateModelMixin, mixins.DestroyModelMixin, generics.GenericAPIView):
+
+    authentication_classes = (SessionAuthentication, BasicAuthentication, TokenAuthentication)
+    permission_classes = (AllowAny)
+
     queryset = Artist.objects.all()
     serializer_class = ArtistSerializer
 
@@ -96,6 +113,10 @@ class ArtistDetail(mixins.RetrieveModelMixin, mixins.UpdateModelMixin, mixins.De
         return self.destroy(request, *args, **kwargs)
 
 class CategoryList(mixins.ListModelMixin, mixins.CreateModelMixin, generics.GenericAPIView):
+
+    authentication_classes = (SessionAuthentication, BasicAuthentication, TokenAuthentication)
+    permission_classes = (AllowAny)
+
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
     pagination_class = StandardResultsSetPagination
@@ -108,6 +129,10 @@ class CategoryList(mixins.ListModelMixin, mixins.CreateModelMixin, generics.Gene
         return self.create(request, *args, **kwargs)
 
 class CategoryDetail(mixins.RetrieveModelMixin, mixins.UpdateModelMixin, mixins.DestroyModelMixin, generics.GenericAPIView):
+
+    authentication_classes = (SessionAuthentication, BasicAuthentication, TokenAuthentication)
+    permission_classes = (AllowAny)
+
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
 
@@ -121,6 +146,10 @@ class CategoryDetail(mixins.RetrieveModelMixin, mixins.UpdateModelMixin, mixins.
         return self.destroy(request, *args, **kwargs)
 
 class AlbumList(mixins.ListModelMixin, mixins.CreateModelMixin, generics.GenericAPIView):
+
+    authentication_classes = (SessionAuthentication, BasicAuthentication, TokenAuthentication)
+    permission_classes = (AllowAny)
+
     queryset = Album.objects.all()
     serializer_class = AlbumSerializer
     filter_backends = (filters.DjangoFilterBackend,filters.OrderingFilter,)
@@ -135,6 +164,10 @@ class AlbumList(mixins.ListModelMixin, mixins.CreateModelMixin, generics.Generic
         return self.create(request, *args, **kwargs)
 
 class AlbumDetail(mixins.RetrieveModelMixin, mixins.UpdateModelMixin, mixins.DestroyModelMixin, generics.GenericAPIView):
+
+    authentication_classes = (SessionAuthentication, BasicAuthentication, TokenAuthentication)
+    permission_classes = (AllowAny)
+
     queryset = Album.objects.all()
     serializer_class = AlbumSerializer
 
@@ -149,6 +182,10 @@ class AlbumDetail(mixins.RetrieveModelMixin, mixins.UpdateModelMixin, mixins.Des
 
 
 class CommentaryList(mixins.ListModelMixin, mixins.CreateModelMixin, generics.GenericAPIView):
+
+    authentication_classes = (SessionAuthentication, BasicAuthentication, TokenAuthentication)
+    permission_classes = (AllowAny)
+
     queryset = Commentary.objects.all()
     serializer_class = CommentarySerializer
 
@@ -160,6 +197,10 @@ class CommentaryList(mixins.ListModelMixin, mixins.CreateModelMixin, generics.Ge
 
 
 class CommentaryDetail(mixins.RetrieveModelMixin, mixins.UpdateModelMixin, mixins.DestroyModelMixin, generics.GenericAPIView):
+
+    authentication_classes = (SessionAuthentication, BasicAuthentication, TokenAuthentication)
+    permission_classes = (AllowAny)
+
     queryset = Commentary.objects.all()
     serializer_class = CommentarySerializer
     pagination_class = StandardResultsSetPagination
@@ -175,6 +216,10 @@ class CommentaryDetail(mixins.RetrieveModelMixin, mixins.UpdateModelMixin, mixin
         return self.destroy(request, *args, **kwargs)
 
 class AudioAlbumAssociation(APIView):
+
+    authentication_classes = (SessionAuthentication, BasicAuthentication, TokenAuthentication)
+    permission_classes = (AllowAny)
+
     def get(self,request,idAudio, idAlbum,format=None):
         audio = Audio.objects.get(id=idAudio)
         album = Album.objects.get(id=idAlbum)
@@ -190,6 +235,10 @@ class AudioAlbumAssociation(APIView):
         return Response(serializer.data)
 
 class RateAudio(APIView):
+
+    authentication_classes = (SessionAuthentication, BasicAuthentication, TokenAuthentication)
+    permission_classes = (AllowAny)
+
     def get(self,request,idAudio, rating,format=None):
         audio = Audio.objects.get(id=idAudio)
         newRate = ((audio.rating * audio.numOfRatings) + int(rating))/(audio.numOfRatings + 1)
@@ -200,6 +249,10 @@ class RateAudio(APIView):
         return Response(serializer.data)
 
 class RateAlbum(APIView):
+
+    authentication_classes = (SessionAuthentication, BasicAuthentication, TokenAuthentication)
+    permission_classes = (AllowAny)
+
     def get(self,request,idAlbum, rating,format=None):
         album = Album.objects.get(id=idAlbum)
         newRate = ((album.rating * album.numOfRatings) + int(rating))/(album.numOfRatings + 1)
@@ -210,6 +263,10 @@ class RateAlbum(APIView):
         return Response(serializer.data)
 
 class PlayAudio(APIView):
+
+    authentication_classes = (SessionAuthentication, BasicAuthentication, TokenAuthentication)
+    permission_classes = (AllowAny)
+
     def get(self,request,idAudio,format=None):
         audio = Audio.objects.get(id=idAudio)
         audio.playCount += 1
@@ -218,6 +275,10 @@ class PlayAudio(APIView):
         return Response(serializer.data)
 
 class DownloadAudio(APIView):
+
+    authentication_classes = (SessionAuthentication, BasicAuthentication, TokenAuthentication)
+    permission_classes = (AllowAny)
+
     def get(self,request,idAudio,format=None):
         audio = Audio.objects.get(id=idAudio)
         audio.downloadsCount += 1
@@ -226,6 +287,10 @@ class DownloadAudio(APIView):
         return Response(serializer.data)
 
 class CategoriesTopRating(APIView):
+
+    authentication_classes = (SessionAuthentication, BasicAuthentication, TokenAuthentication)
+    permission_classes = (AllowAny)
+
     def get(self,request,size,format=None):
         resp = []
         categories = Category.objects.all()

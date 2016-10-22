@@ -1,10 +1,19 @@
 from tokenize import Token
+
+from django.contrib.auth import get_user_model
+from django.contrib.auth.models import User
+from django.http import JsonResponse
+from rest_framework import permissions
+from rest_framework.authentication import BasicAuthentication, TokenAuthentication
+from rest_framework.authentication import SessionAuthentication
 from rest_framework.authtoken.models import Token
 
 from django.shortcuts import render
 from rest_framework import generics
 from rest_framework import mixins
 from rest_framework.authtoken.views import ObtainAuthToken
+from rest_framework.generics import CreateAPIView
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 from rest_framework import filters
 from sonidosLibresApp.customPagination import StandardResultsSetPagination
@@ -20,11 +29,20 @@ class CustomObtainAuthToken(ObtainAuthToken):
     def post(self, request, *args, **kwargs):
         response = super(CustomObtainAuthToken, self).post(request, *args, **kwargs)
         token = Token.objects.get(key=response.data['token'])
-        artist = Artist.objects.get(id = token.user_id)
-        serializer = UserSerializer(artist)
+        user = User.objects.get(id = token.user_id)
+        serializer = UserSerializer(user)
         return Response({'token': token.key, 'id': token.user_id, 'user': serializer.data})
 
+class CreateUserView(CreateAPIView):
+
+    model = get_user_model()
+    permission_classes = [
+        permissions.AllowAny # Or anon users can't register
+    ]
+    serializer_class = UserSerializer
+
 class AudioList(mixins.ListModelMixin, mixins.CreateModelMixin, generics.GenericAPIView):
+
     queryset = Audio.objects.all()
     serializer_class = AudioSerializer
     filter_backends = (filters.DjangoFilterBackend,filters.OrderingFilter,)
@@ -39,6 +57,7 @@ class AudioList(mixins.ListModelMixin, mixins.CreateModelMixin, generics.Generic
         return self.create(request, *args, **kwargs)
 
 class AudioDetail(mixins.RetrieveModelMixin, mixins.UpdateModelMixin, mixins.DestroyModelMixin, generics.GenericAPIView):
+
     queryset = Audio.objects.all()
     serializer_class = AudioSerializer
 

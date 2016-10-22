@@ -1,12 +1,12 @@
 from django.conf.urls import url, include
 from rest_framework.routers import DefaultRouter
-from rest_framework.urlpatterns import format_suffix_patterns
 from sonidosLibresApp import views
 
 router = DefaultRouter()
 
 urlpatterns = [
     url(r'^', include(router.urls)),
+    url(r'^login/?$', views.CustomObtainAuthToken.as_view()),
     url(r'^audios/?$', views.AudioList.as_view()),
     url(r'^audios/(?P<pk>[0-9]+)/?$', views.AudioDetail.as_view()),
     url(r'^artists/?$', views.ArtistList.as_view()),

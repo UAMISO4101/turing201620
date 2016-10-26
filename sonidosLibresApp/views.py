@@ -271,7 +271,6 @@ class CategoriesTopRating(APIView):
         return JsonResponse(resp, safe=False)
 
     class ConvocationList(mixins.ListModelMixin, mixins.CreateModelMixin, generics.GenericAPIView):
-
         queryset = Convocation.objects.all()
         serializer_class = ConvocationSerializer
 
@@ -281,8 +280,8 @@ class CategoriesTopRating(APIView):
         def post(self, request, *args, **kwargs):
             return self.create(request, *args, **kwargs)
 
-    class ConvocationDetail(mixins.RetrieveModelMixin, mixins.UpdateModelMixin, mixins.DestroyModelMixin, generics.GenericAPIView):
-
+    class ConvocationDetail(mixins.RetrieveModelMixin, mixins.UpdateModelMixin, mixins.DestroyModelMixin,
+                      generics.GenericAPIView):
         queryset = Convocation.objects.all()
         serializer_class = ConvocationSerializer
 
@@ -294,3 +293,4 @@ class CategoriesTopRating(APIView):
 
         def delete(self, request, *args, **kwargs):
             return self.destroy(request, *args, **kwargs)
+

@@ -25,6 +25,7 @@ urlpatterns = [
     url(r'^download/(?P<idAudio>[0-9]+)/?$', views.DownloadAudio.as_view()),
     url(r'^categoriesTopRating/(?P<size>[0-9]+)/?$', views.CategoriesTopRating.as_view()),
 
+
 ]
 
 #urlpatterns =format_suffix_patterns(urlpatterns)

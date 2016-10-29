@@ -20,6 +20,7 @@ from sonidosLibresApp.customPagination import StandardResultsSetPagination
 from sonidosLibresApp.serializers import AudioSerializer, CategorySerializer, AlbumSerializer, CommentarySerializer, \
     ArtistSerializer, ConvocationSerializer, UserSerializer
 from .models import Audio, Category, Album, Commentary, Artist, Convocation
+from datetime import datetime, date, time, timedelta
 from rest_framework.response import Response
 
 def index(request):
@@ -294,3 +295,21 @@ class ConvocationDetail(mixins.RetrieveModelMixin, mixins.UpdateModelMixin, mixi
     def delete(self, request, *args, **kwargs):
         return self.destroy(request, *args, **kwargs)
 
+class ConvocationExpired(APIView):
+    def get(self,request,format=None):
+        max = 5
+        dateToday = date.today()
+        dateExprired = date.today() + timedelta(days=7)
+        expired = []
+        convocations = Convocation.objects.all()
+
+        for c in convocations:
+            serializaser = ConvocationSerializer(c)
+            if len(expired) == 5:
+                break
+            if dateToday <= c.dateEnd <= dateExprired:
+                expired.append(serializaser.data)
+
+
+
+        return JsonResponse(expired, safe=False)

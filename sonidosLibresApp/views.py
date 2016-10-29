@@ -274,6 +274,10 @@ class CategoriesTopRating(APIView):
 class ConvocationList(mixins.ListModelMixin, mixins.CreateModelMixin, generics.GenericAPIView):
     queryset = Convocation.objects.all()
     serializer_class = ConvocationSerializer
+    filter_backends = (filters.DjangoFilterBackend, filters.OrderingFilter,)
+    pagination_class = StandardResultsSetPagination
+    filter_fields = ('title', 'agent', 'typeConvocation', 'status')
+    ordering_fields = ('title', 'agent', 'typeConvocation', 'status')
 
     def get(self, request, *args, **kwargs):
         return self.list(request, *args, **kwargs)

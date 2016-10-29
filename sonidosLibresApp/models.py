@@ -105,7 +105,7 @@ class Convocation(models.Model):
     title = models.CharField(max_length=40)
     detail = models.CharField(max_length=5000)
     agent = models.ForeignKey(Agent,on_delete=models.CASCADE)
-    typeConvocation =models.CharField(max_length=3,choices=typeConvocation_choices,default=public)
+    typeConvocation = models.CharField(max_length=3,choices=typeConvocation_choices,default=public)
     terms = models.URLField()
     dateInit = models.DateField(default=datetime.now)
     dateEnd = models.DateField(default=datetime.now)

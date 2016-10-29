@@ -10,7 +10,7 @@ class CategoryTest(APITestCase):
         response = self.client.get(url, format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-    def testCreateCategory(self):
+    def testDetailCategory(self):
         url = '/api/categories/'
         data = {'name': 'categoriaDemo',
                 'image': 'https://www.google.com.co',
@@ -20,9 +20,8 @@ class CategoryTest(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(Category.objects.get().name, 'categoriaDemo')
 
-    def testUpdateCategory(self):
-        category=Category.objects.get(name='categoriaDemo')
-        url = '/api/categories/' + category.id
+        category = Category.objects.get(name='categoriaDemo')
+        url = '/api/categories/' + str(category.id)
         data = {'name': 'newCategoryName',
                 'image': 'https://www.google.com.co',
                 'description': 'new Description'
@@ -31,6 +30,10 @@ class CategoryTest(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(Category.objects.get().name, 'newCategoryName')
 
+        response = self.client.delete(url, format='json')
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
 
-    #def testDeleteCategory(self):
+        response = self.client.get(url, format='json')
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
 

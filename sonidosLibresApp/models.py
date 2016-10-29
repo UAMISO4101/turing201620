@@ -29,15 +29,16 @@ class Artist(models.Model):
     user = models.OneToOneField(User, null=True, blank=True)
     image = models.URLField()
 
-
 @receiver(post_save, sender=User)
 def create_user_profile(sender, instance, created, **kwargs):
     if created:
         Artist.objects.create(user=instance)
+        Agent.objects.create(user=instance)
 
 @receiver(post_save, sender=User)
 def save_user_profile(sender, instance, **kwargs):
     instance.artist.save()
+    instance.agent.save()
 
 class Album (models.Model):
     def __str__(self):
@@ -86,35 +87,30 @@ class Agent(models.Model):
     user = models.OneToOneField(User, null=True, blank=True)
     image = models.URLField()
 
-    @receiver(post_save, sender=User)
-    def create_user_profile(sender, instance, created, **kwargs):
-        if created:
-            Artist.objects.create(user=instance)
-
-    @receiver(post_save, sender=User)
-    def save_user_profile(sender, instance, **kwargs):
-        instance.artist.save()
 
 class Convocation(models.Model):
     def __str__(self):
         return self.title + " " + str(self.id)
     public='PUB'
-    private='PRIV'
-    unpublished='UP'
+    private='PRI'
+    typeConvocation_choices= ((public,'Convocatoria Publica'),(private,'Convocatoria Privada'))
+    unpublished='U'
     published='P'
     vote='V'
     close='C'
+    status_choices= ((unpublished,'Sin Publicar'),(published,'Publicada'),(vote,'En Votacion'),(close,'Cerrada'))
 
     name = models.CharField(max_length=40)
+    title = models.CharField(max_length=40)
     detail = models.CharField(max_length=5000)
     agent = models.ForeignKey(Agent,on_delete=models.CASCADE)
-    typeConvocation = ((public,'Convocatoria Publica'),(private,'Convocatoria Privada'))
+    typeConvocation =models.CharField(max_length=3,choices=typeConvocation_choices,default=public)
     terms = models.URLField()
     dateInit = models.DateTimeField(editable=True, default=django.utils.timezone.now)
     dateEnd = models.DateTimeField(editable=True, default=django.utils.timezone.now)
     dateLimit = models.DateTimeField(editable=True, default=django.utils.timezone.now)
     dateResults = models.DateTimeField(editable=True, default=django.utils.timezone.now)
-    status = ((unpublished,'Sin Publicar'),(published,'Publicada'),(vote,'En Votacion'),(close,'Cerrada'))
+    status = models.CharField(max_length=1 ,choices=status_choices ,default=unpublished)
     winner = models.ForeignKey(Artist,on_delete=models.CASCADE,null=True,blank=True)
 
 class ConvocationAudio(models.Model):

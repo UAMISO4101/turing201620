@@ -18,8 +18,8 @@ from rest_framework.views import APIView
 from rest_framework import filters
 from sonidosLibresApp.customPagination import StandardResultsSetPagination
 from sonidosLibresApp.serializers import AudioSerializer, CategorySerializer, AlbumSerializer, CommentarySerializer, \
-    ArtistSerializer, UserSerializer
-from .models import Audio, Category, Album, Commentary, Artist
+    ArtistSerializer, ConvocationSerializer, UserSerializer
+from .models import Audio, Category, Album, Commentary, Artist, Convocation
 from rest_framework.response import Response
 
 def index(request):
@@ -269,3 +269,28 @@ class CategoriesTopRating(APIView):
             resp.append(cat)
 
         return JsonResponse(resp, safe=False)
+
+class ConvocationList(mixins.ListModelMixin, mixins.CreateModelMixin, generics.GenericAPIView):
+    queryset = Convocation.objects.all()
+    serializer_class = ConvocationSerializer
+
+    def get(self, request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        return self.create(request, *args, **kwargs)
+
+class ConvocationDetail(mixins.RetrieveModelMixin, mixins.UpdateModelMixin, mixins.DestroyModelMixin,
+                  generics.GenericAPIView):
+    queryset = Convocation.objects.all()
+    serializer_class = ConvocationSerializer
+
+    def get(self, request, *args, **kwargs):
+        return self.retrieve(request, *args, **kwargs)
+
+    def put(self, request, *args, **kwargs):
+        return self.update(request, *args, **kwargs)
+
+    def delete(self, request, *args, **kwargs):
+        return self.destroy(request, *args, **kwargs)
+

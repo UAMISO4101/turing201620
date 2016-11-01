@@ -153,16 +153,18 @@ MEDIA_ROOT = os.path.normpath(os.path.join('sonidosLibresApp/static', 'media'))
 MEDIA_URL = '/media/'
 # END MEDIA CONFIGURATION
 
-try:
-    import dj_database_url
-    DATABASES['default'] = dj_database_url.config()
-    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
-    ALLOWED_HOSTS = ['*']
-    DEBUG = True
-except:
-    pass
+ON_HEROKU = os.environ.get('ON_HEROKU')
+if ON_HEROKU:
+    try:
+        import dj_database_url
+        DATABASES['default'] = dj_database_url.config()
+        SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+        ALLOWED_HOSTS = ['*']
+        DEBUG = True
+    except:
+        pass
 
-try:
-    from .local_settings import *
-except ImportError:
-    pass
+    try:
+        from .local_settings import *
+    except ImportError:
+        pass

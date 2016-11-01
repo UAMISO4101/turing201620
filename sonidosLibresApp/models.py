@@ -14,10 +14,10 @@ class Category(models.Model):
     class Meta:
         verbose_name_plural = "categories"
 
-    name = models.CharField(max_length=40)
+    name = models.CharField(max_length=40, unique=True)
     image = models.URLField()
     description = models.TextField()
-    relatedCategories = models.ManyToManyField('self', blank=True)
+    relatedCategories = models.ManyToManyField('self',editable=False, blank=True)
 
 
 class Artist(models.Model):

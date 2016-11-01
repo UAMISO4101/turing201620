@@ -1,7 +1,7 @@
 from django.contrib.auth.models import User
 from rest_framework import serializers
 
-from .models import Audio, Category, Album, Commentary, Artist,Convocation
+from .models import Audio, Category, Album, Commentary, Artist,Convocation,ConvocationAudio
 
 class AudioCreate(serializers.ModelSerializer):
     class Meta:
@@ -33,9 +33,15 @@ class CommentarySerializer(serializers.ModelSerializer):
     class Meta:
         model = Commentary
 
+
 class ConvocationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Convocation
+
+class ConvocationAudioSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ConvocationAudio
+
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:

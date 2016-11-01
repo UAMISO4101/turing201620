@@ -1,11 +1,11 @@
 from rest_framework import status
 from rest_framework.test import APITestCase
 
-from sonidosLibresApp.models import Category
+from sonidosLibresApp.models import Category, Audio, Artist, Album
 
 class CategoryTest(APITestCase):
 
-    def testGetCategories(self):
+    def testListCategories(self):
         url = '/api/categories'
         response = self.client.get(url, format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -32,8 +32,158 @@ class CategoryTest(APITestCase):
 
         response = self.client.delete(url, format='json')
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
-
         response = self.client.get(url, format='json')
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
 
+class ArtistsTest(APITestCase):
+
+    def testListArtists(self):
+        url = '/api/artists'
+        response = self.client.get(url, format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def testDetailArtist(self):
+        url = '/api/artists/'
+        data = {'name': 'artistName',
+                'image': 'https://www.google.com.co'
+                }
+        response = self.client.post(url, data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(Artist.objects.get().name, 'artistName')
+
+        artist = Artist.objects.get(name='artistName')
+        url = '/api/artists/' + str(artist.id)
+        data = {'name': 'newArtistName',
+                'image': 'https://www.yahoo.com'
+                }
+        response = self.client.put(url, data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(Artist.objects.get().name, 'newArtistName')
+
+        response = self.client.delete(url, format='json')
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        response = self.client.get(url, format='json')
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+
+class AlbumTest(APITestCase):
+
+    def testListAlbums(self):
+        url = '/api/albums'
+        response = self.client.get(url, format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def testDetailAlbums(self):
+
+        url = '/api/categories/'
+        data = {'name': 'categoriaDemo',
+                'image': 'https://www.google.com.co',
+                'description': 'Description'
+                }
+        self.client.post(url, data, format='json')
+        category = Category.objects.get(name='categoriaDemo')
+
+        url = '/api/artists/'
+        data = {'name': 'artistName',
+                'image': 'https://www.google.com.co'
+                }
+        self.client.post(url, data, format='json')
+        artist = Artist.objects.get(name='artistName')
+
+        url = '/api/albums/'
+        data = {
+            'title': 'albumTitle',
+            'image': 'http://loudwire.com/files/2015/09/Nevermind.jpg',
+            'categories': [str(category.id)],
+            'artists': [str(artist.id)]
+        }
+        response = self.client.post(url, data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(Album.objects.get().title, 'albumTitle')
+
+        album = Album.objects.get(title='albumTitle')
+        url = '/api/albums/' + str(album.id)
+        data = {
+            "title": "newAlbumTitle",
+            "image": "http://google.com",
+            "categories": [str(category.id)],
+            "artists": [str(artist.id)]
+        }
+        response = self.client.put(url, data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(Album.objects.get().title, 'newAlbumTitle')
+
+        response = self.client.delete(url, format='json')
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        response = self.client.get(url, format='json')
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+
+class AudioTest(APITestCase):
+
+    def testListAudios(self):
+        url = '/api/audios'
+        response = self.client.get(url, format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def testDetailAudio(self):
+
+        url = '/api/categories/'
+        data = {'name': 'categoriaDemo',
+                'image': 'https://www.google.com.co',
+                'description': 'Description'
+                }
+        self.client.post(url, data, format='json')
+        category = Category.objects.get(name='categoriaDemo')
+
+        url = '/api/artists/'
+        data = {'name': 'artistName',
+                'image': 'https://www.google.com.co'
+                }
+        self.client.post(url, data, format='json')
+        artist = Artist.objects.get(name='artistName')
+
+        url = '/api/albums/'
+        data = {
+            'title': 'albumTitle',
+            'image': 'http://loudwire.com/files/2015/09/Nevermind.jpg',
+            'categories': [str(category.id)],
+            'artists': [str(artist.id)]
+        }
+        self.client.post(url, data, format='json')
+        album = Album.objects.get(title='albumTitle')
+
+        url = '/api/audios/'
+        data = {
+            "name": "d8d1b374-0fa4-4daf-ac9b-3e506662d78d",
+            "title": "AudioDemo",
+            "audioDownload": "http://www.dropbox.com",
+            "audioPlay": "http://www.dropbox.com",
+            "categories": [str(category.id)],
+            "albums": [str(album.id)],
+            "artists": [str(artist.id)]
+        }
+        response = self.client.post(url, data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(Audio.objects.get().name, 'd8d1b374-0fa4-4daf-ac9b-3e506662d78d')
+
+        audio = Audio.objects.get(name='d8d1b374-0fa4-4daf-ac9b-3e506662d78d')
+        url = '/api/audios/' + str(audio.id)
+        data = {
+            "name": "6ef3058c-7110-46cf-8d76-794f49dc35e6",
+            "title": "NewAudio",
+            "audioDownload": "http://www.yahoo.com",
+            "audioPlay": "http://www.yahoo.com",
+            "categories": [str(category.id)],
+            "albums": [str(album.id)],
+            "artists": [str(artist.id)]
+        }
+        response = self.client.put(url, data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(Audio.objects.get().name, '6ef3058c-7110-46cf-8d76-794f49dc35e6')
+
+        response = self.client.delete(url, format='json')
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        response = self.client.get(url, format='json')
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)

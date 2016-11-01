@@ -17,7 +17,7 @@ class Category(models.Model):
     name = models.CharField(max_length=40)
     image = models.URLField()
     description = models.TextField()
-    relatedCategories = models.ManyToManyField('self')
+    relatedCategories = models.ManyToManyField('self', blank=True)
 
 
 class Artist(models.Model):

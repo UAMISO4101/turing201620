@@ -1,7 +1,7 @@
 from rest_framework import status
 from rest_framework.test import APITestCase
 
-from sonidosLibresApp.models import Category, Audio, Artist, Album
+from sonidosLibresApp.models import Category, Audio, Artist, Album, Commentary
 
 class CategoryTest(APITestCase):
 
@@ -75,7 +75,6 @@ class AlbumTest(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def testDetailAlbums(self):
-
         url = '/api/categories/'
         data = {'name': 'categoriaDemo',
                 'image': 'https://www.google.com.co',
@@ -128,7 +127,6 @@ class AudioTest(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def testDetailAudio(self):
-
         url = '/api/categories/'
         data = {'name': 'categoriaDemo',
                 'image': 'https://www.google.com.co',
@@ -182,6 +180,77 @@ class AudioTest(APITestCase):
         response = self.client.put(url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(Audio.objects.get().name, '6ef3058c-7110-46cf-8d76-794f49dc35e6')
+
+        response = self.client.delete(url, format='json')
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        response = self.client.get(url, format='json')
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+
+class CommentaryTest(APITestCase):
+
+    def testListCommentaries(self):
+        url = '/api/commentaries'
+        response = self.client.get(url, format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def testDetailCommentaries(self):
+        url = '/api/categories/'
+        data = {'name': 'categoriaDemo',
+                'image': 'https://www.google.com.co',
+                'description': 'Description'
+                }
+        self.client.post(url, data, format='json')
+        category = Category.objects.get(name='categoriaDemo')
+
+        url = '/api/artists/'
+        data = {'name': 'artistName',
+                'image': 'https://www.google.com.co'
+                }
+        self.client.post(url, data, format='json')
+        artist = Artist.objects.get(name='artistName')
+
+        url = '/api/albums/'
+        data = {
+            'title': 'albumTitle',
+            'image': 'http://loudwire.com/files/2015/09/Nevermind.jpg',
+            'categories': [str(category.id)],
+            'artists': [str(artist.id)]
+        }
+        self.client.post(url, data, format='json')
+        album = Album.objects.get(title='albumTitle')
+
+        url = '/api/audios/'
+        data = {
+            "name": "d8d1b374-0fa4-4daf-ac9b-3e506662d78d",
+            "title": "AudioDemo",
+            "audioDownload": "http://www.dropbox.com",
+            "audioPlay": "http://www.dropbox.com",
+            "categories": [str(category.id)],
+            "albums": [str(album.id)],
+            "artists": [str(artist.id)]
+        }
+        self.client.post(url, data, format='json')
+        audio = Audio.objects.get(name='d8d1b374-0fa4-4daf-ac9b-3e506662d78d')
+
+        url = '/api/commentaries/'
+        data = {
+            "commentary": "f5142b54-4113-4703-bf71-b1ee4fdb02d4",
+            "audio": str(audio.id)
+        }
+        response = self.client.post(url, data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(Commentary.objects.get().commentary, 'f5142b54-4113-4703-bf71-b1ee4fdb02d4')
+
+        commentary = Commentary.objects.get(commentary='f5142b54-4113-4703-bf71-b1ee4fdb02d4')
+        url = '/api/commentaries/' + str(commentary.id)
+        data = {
+            "commentary": "a0181681-afc5-440b-a2b7-36cdf5530873",
+            "audio": str(audio.id)
+        }
+        response = self.client.put(url, data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(Commentary.objects.get().commentary, 'a0181681-afc5-440b-a2b7-36cdf5530873')
 
         response = self.client.delete(url, format='json')
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)

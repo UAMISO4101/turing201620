@@ -4,6 +4,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.models import User
 from django.http import JsonResponse
 from rest_framework import permissions
+from rest_framework import status
 from rest_framework.authentication import BasicAuthentication, TokenAuthentication
 from rest_framework.authentication import SessionAuthentication
 from rest_framework.authtoken.models import Token
@@ -317,3 +318,21 @@ class ConvocationExpired(APIView):
 
 
         return JsonResponse(expired, safe=False)
+
+class Registrar(APIView):
+
+    def post(self, request, format=None):
+        serializer = UserSerializer(data=request.data)
+        if serializer.is_valid():
+            if User.objects.filter(username = request.data.get('username')).count()>0:
+                message = 'El username no está disponible'
+                response = JsonResponse({'error': message}, status=409)
+                return response
+            elif User.objects.filter(email = request.data.get('email')):
+                message = 'El correo electrónico ya se encuentra registrado'
+                response = JsonResponse({'error': message}, status=409)
+                return response
+            else:
+              serializer.save()
+              return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

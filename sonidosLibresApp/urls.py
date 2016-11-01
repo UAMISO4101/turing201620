@@ -2,9 +2,6 @@ from django.conf.urls import url, include
 from rest_framework.routers import DefaultRouter
 from sonidosLibresApp import views
 
-
-
-
 router = DefaultRouter()
 
 urlpatterns = [
@@ -29,9 +26,8 @@ urlpatterns = [
     url(r'^categoriesTopRating/(?P<size>[0-9]+)/?$', views.CategoriesTopRating.as_view()),
     url(r'^convocations/?$', views.ConvocationList.as_view()),
     url(r'^convocations/(?P<size>[0-9]+)/?$',views.ConvocationDetail.as_view()),
-    url(r'^convocationExpired/?$',views.ConvocationExpired.as_view())
-
-
+    url(r'^convocationExpired/?$',views.ConvocationExpired.as_view()),
+    url(r'^registrar/?$', views.Registrar.as_view())
 
 ]
 

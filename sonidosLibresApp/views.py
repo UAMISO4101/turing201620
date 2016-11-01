@@ -19,7 +19,7 @@ from rest_framework.views import APIView
 from rest_framework import filters
 from sonidosLibresApp.customPagination import StandardResultsSetPagination
 from sonidosLibresApp.serializers import AudioSerializer, CategorySerializer, AlbumSerializer, CommentarySerializer, \
-    ArtistSerializer, ConvocationSerializer, UserSerializer
+    ArtistSerializer, ConvocationSerializer, UserSerializer, AgenteSerializer, AdminSerializer
 from .models import Audio, Category, Album, Commentary, Artist, Convocation
 from datetime import datetime, date, time, timedelta
 from rest_framework.response import Response
@@ -35,6 +35,15 @@ class CustomObtainAuthToken(ObtainAuthToken):
         serializer = UserSerializer(user)
         return Response({'token': token.key, 'id': token.user_id, 'user': serializer.data})
 
+class CreateAdminView(CreateAPIView):
+
+    model = get_user_model()
+    permission_classes = [
+        permissions.AllowAny # Or anon users can't register
+    ]
+    serializer_class = AdminSerializer
+    print(CreateAPIView)
+
 class CreateUserView(CreateAPIView):
 
     model = get_user_model()
@@ -42,6 +51,16 @@ class CreateUserView(CreateAPIView):
         permissions.AllowAny # Or anon users can't register
     ]
     serializer_class = UserSerializer
+    print(CreateAPIView)
+
+class CreateAgentView(CreateAPIView):
+
+    model = get_user_model()
+    permission_classes = [
+        permissions.AllowAny # Or anon users can't register
+    ]
+    serializer_class = AgenteSerializer
+    print(CreateAPIView)
 
 class AudioList(mixins.ListModelMixin, mixins.CreateModelMixin, generics.GenericAPIView):
 

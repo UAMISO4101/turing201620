@@ -7,7 +7,9 @@ router = DefaultRouter()
 urlpatterns = [
     url(r'^', include(router.urls)),
     url(r'^login/?$', views.CustomObtainAuthToken.as_view()),
-    url(r'^signUp/?$', views.CreateUserView.as_view()),
+    url(r'^signUp/artist/?$', views.CreateUserView.as_view()),
+    url(r'^signUp/agent/?$', views.CreateAgentView.as_view()),
+    url(r'^signUp/admin/?$', views.CreateAdminView.as_view()),
     url(r'^audios/?$', views.AudioList.as_view()),
     url(r'^audios/(?P<pk>[0-9]+)/?$', views.AudioDetail.as_view()),
     url(r'^artists/?$', views.ArtistList.as_view()),

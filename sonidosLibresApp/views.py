@@ -252,7 +252,6 @@ class CategoriesTopRating(APIView):
         categories = Category.objects.all()
         for c in categories:
             cat = {}
-            serializer = CategorySerializer(c)
             cat['id']=c.pk
             cat['name']=c.name
             cat['image'] = c.image
@@ -394,5 +393,7 @@ class CreateGroups(APIView):
         g = Group.objects.create(name='agents')
         response = JsonResponse({'OK': 'Grupos creados'}, status=200)
         return response
+
+class
 
 

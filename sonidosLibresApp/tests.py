@@ -516,6 +516,7 @@ class CreateUsersTest(APITestCase):
         self.assertEqual(artist.username, 'artista1@abc.com')
 
     def testCreateAgents(self):
+        g = Group.objects.create(name='agents')
         url = '/api/signUp/agent'
         data = {'email': 'artista1@abc.com',
                 'first_name': 'Artista',

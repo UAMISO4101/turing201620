@@ -20,7 +20,7 @@ from rest_framework import filters
 from sonidosLibresApp.customPagination import StandardResultsSetPagination
 from sonidosLibresApp.serializers import AudioSerializer, CategorySerializer, AlbumSerializer, CommentarySerializer, \
     ArtistSerializer, ConvocationSerializer, UserSerializer, ConvocationAudioSerializer, AgenteSerializer, AdminSerializer
-from .models import Audio, Category, Album, Commentary, Artist, Convocation
+from .models import Audio, Category, Album, Commentary, Artist, Convocation, ConvocationAudio
 from datetime import datetime, date, time, timedelta
 from rest_framework.response import Response
 
@@ -355,6 +355,8 @@ class Registrar(APIView):
               serializer.save()
               return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
 class ConvocationAudioAsociation(APIView):
     def get(self,request,idAudio,idConvocation,format=None):
         audio = Audio.objects.get(id=idAudio)

@@ -373,7 +373,6 @@ class VotingAudio(APIView):
         artist=Artist.objects.get(id=idArtist)
         convocationAudio=ConvocationAudio.objects.get(id=idConvocationAudio)
         convocation = convocationAudio.convocation
-        #if (ConvocationVoting.objects.get(convocation=convocation) is None) and (ConvocationVoting.objects.get(artist=artist) is None):
         convocationAudio.votes += 1
         convocationAudio.save()
         convocatioVoting = ConvocationVoting()

@@ -503,7 +503,7 @@ class DownloadAudioTest(APITestCase):
 class CreateUsersTest(APITestCase):
 
     def testCreateArtists(self):
-        g = Group.objects.create(name='artists')
+        self.client.get('/api/createGroups', format='json')
         url = '/api/signUp/artist'
         data = {'email':'artista1@abc.com',
                 'first_name':'Artista',
@@ -516,7 +516,7 @@ class CreateUsersTest(APITestCase):
         self.assertEqual(artist.username, 'artista1@abc.com')
 
     def testCreateAgents(self):
-        g = Group.objects.create(name='agents')
+        self.client.get('/api/createGroups', format='json')
         url = '/api/signUp/agent'
         data = {'email': 'artista1@abc.com',
                 'first_name': 'Artista',
@@ -531,7 +531,7 @@ class CreateUsersTest(APITestCase):
 
     def testCreateAdmins(self):
         url = '/api/signUp/admin'
-        g = Group.objects.create(name='admins')
+        self.client.get('/api/createGroups', format='json')
         data = {'email': 'artista1@abc.com',
                 'first_name': 'Artista',
                 'last_name': 'Artista',

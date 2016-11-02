@@ -387,6 +387,12 @@ class ConvocationAudioDelete(APIView):
         convocatioAudio = ConvocationAudio.objects.get(id=idConvocationAudio)
         convocatioAudio.delete()
 
-
+class CreateGroups(APIView):
+    def get(self, request):
+        g = Group.objects.create(name='admins')
+        g = Group.objects.create(name='artists')
+        g = Group.objects.create(name='agents')
+        response = JsonResponse({'OK': 'Grupos creados'}, status=200)
+        return response
 
 

@@ -394,6 +394,5 @@ class CreateGroups(APIView):
         response = JsonResponse({'OK': 'Grupos creados'}, status=200)
         return response
 
-class
 
 

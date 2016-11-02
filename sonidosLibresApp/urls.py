@@ -27,12 +27,11 @@ urlpatterns = [
     url(r'^download/(?P<idAudio>[0-9]+)/?$', views.DownloadAudio.as_view()),
     url(r'^categoriesTopRating/(?P<size>[0-9]+)/?$', views.CategoriesTopRating.as_view()),
     url(r'^convocations/?$', views.ConvocationList.as_view()),
-    url(r'^convocations/(?P<size>[0-9]+)/?$',views.ConvocationDetail.as_view()),
+    url(r'^convocations/(?P<pk>[0-9]+)/?$',views.ConvocationDetail.as_view()),
     url(r'^convocationExpired/?$',views.ConvocationExpired.as_view()),
-    url(r'^registrar/?$', views.Registrar.as_view())
+    url(r'^registrar/?$', views.Registrar.as_view()),
     url(r'^convocationExpired/?$',views.ConvocationExpired.as_view()),
     url(r'^convocationAudio/(?P<idAudio>[0-9]+)/(?P<idConvocation>[0-9]+)/?$', views.ConvocationAudioAsociation.as_view())
-
 
 
 ]

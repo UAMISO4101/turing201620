@@ -1,7 +1,8 @@
 from rest_framework import status
 from rest_framework.test import APITestCase
 
-from sonidosLibresApp.models import Category, Audio, Artist, Album, Commentary
+from sonidosLibresApp.models import Category, Audio, Artist, Album, Commentary, User, Convocation
+from datetime import date, timedelta
 
 class CategoryTest(APITestCase):
 
@@ -498,3 +499,82 @@ class DownloadAudioTest(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         audio = Audio.objects.get(id=audio.id)
         self.assertEqual(audio.downloadsCount, i + 1)
+
+
+class AgentTest(APITestCase):
+
+    def testSignUp(self):
+        url = '/api/signUp/'
+        data = {"username": "usuario",
+            "password": "pwd",
+            "email": "usuario@abc.com",
+            "first_name": "nombre",
+            "last_name": "apellido",
+            "is_active": "true"
+                }
+        response = self.client.post(url, data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(User.objects.get().username, 'usuario')
+
+
+class ConvocationTest(APITestCase):
+
+    def testListConvocation(self):
+        url = '/api/convocations'
+        response = self.client.get(url, format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def testDetailConvocation(self):
+        url = '/api/signUp/'
+        data = {"username": "usuario",
+            "password": "pwd",
+            "email": "usuario@abc.com",
+            "first_name": "nombre",
+            "last_name": "apellido",
+            "is_active": "true"
+                }
+        self.client.post(url, data, format='json')
+        agente = User.objects.get(username='usuario')
+
+        url = '/api/convocations/'
+        data = {
+            "name": "NombreConvocatoria",
+            "title": "TituloConvocatoria",
+            "detail": "Detalle",
+            "typeConvocation": "PUB",
+            "terms": "",
+            "dateInit": str(date.today()),
+            "dateEnd": str(date.today() + timedelta(days=1)),
+            "dateLimit": str(date.today() + timedelta(days=2)),
+            "dateResults": str(date.today() + timedelta(days=10)),
+            "status": "U",
+            "agent": str(agente.id)
+        }
+        response = self.client.post(url, data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(Convocation.objects.get().name, 'NombreConvocatoria')
+
+        convocatoria = Convocation.objects.get(name='NombreConvocatoria')
+        url = '/api/convocations/' + str(convocatoria.id)
+        data = {
+            "name": "NewNombreConvocatoria",
+            "title": "NewTituloConvocatoria",
+            "detail": "NewDetalle",
+            "typeConvocation": "PRI",
+            "terms": "",
+            "dateInit": str(date.today()),
+            "dateEnd": str(date.today() + timedelta(days=1)),
+            "dateLimit": str(date.today() + timedelta(days=2)),
+            "dateResults": str(date.today() + timedelta(days=10)),
+            "status": "P",
+            "agent": str(agente.id)
+        }
+        # response = self.client.put(url, data, format='json')
+        # self.assertEqual(response.status_code, status.HTTP_200_OK)
+        # self.assertEqual(Convocation.objects.get().name, 'NewNombreConvocatoria')
+        #
+        # response = self.client.delete(url, format='json')
+        # self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        # response = self.client.get(url, format='json')
+        # self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+

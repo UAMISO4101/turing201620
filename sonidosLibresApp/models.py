@@ -118,7 +118,7 @@ class Convocation(models.Model):
 class ConvocationAudio(models.Model):
     convocation=models.ForeignKey(Convocation,on_delete=models.CASCADE)
     audio=models.ForeignKey(Audio,on_delete=models.CASCADE)
-    votes=models.IntegerField(editable=False, default = 0)
+    votes=models.IntegerField(editable=True, default = 0)
 
 
 class ConvocationVoting(models.Model):

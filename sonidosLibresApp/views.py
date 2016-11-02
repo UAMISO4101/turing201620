@@ -368,17 +368,20 @@ class ConvocationAudioAsociation(APIView):
         serializer = ConvocationAudioSerializer(convocatioAudio)
         return Response(serializer.data)
 
-class ConvocationAudioVoting (APIView):
-
+class VotingAudio(APIView):
     def get(self,request,idConvocationAudio,idArtist,format=None):
-        convocatioAudio = ConvocationAudio.objects.get(idConvocationAudio)
-        convocatioAudio.votes +=1
-        convocatioAudio.save()
-        convocationVoting=ConvocationVoting()
-        convocationVoting.convocation=convocatioAudio.convocation
-        artist=Artist.objects.get(idArtist)
-        convocationVoting.artist=artist
-        convocationVoting.save()
-        serializer = ConvocationVotingSerializer(convocationVoting)
+        artist=Artist.objects.get(id=idArtist)
+        convocationAudio=ConvocationAudio.objects.get(id=idConvocationAudio)
+        convocation = convocationAudio.convocation
+        #if (ConvocationVoting.objects.get(convocation=convocation) is None) and (ConvocationVoting.objects.get(artist=artist) is None):
+        convocationAudio.votes += 1
+        convocationAudio.save()
+        convocatioVoting = ConvocationVoting()
+        convocatioVoting.artist=artist
+        convocatioVoting.convocation=convocation
+        convocatioVoting.save()
+        serializer = ConvocationVotingSerializer(convocatioVoting)
+        #serializer= ConvocationAudioSerializer(convocationAudio)
         return Response(serializer.data)
+
 

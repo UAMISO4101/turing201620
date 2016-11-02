@@ -527,3 +527,16 @@ class CreateUsersTest(APITestCase):
         self.client.post(url, data, format='json')
         artist = User.objects.get(first_name='Artista')
         self.assertEqual(artist.username, 'artista1@abc.com')
+
+
+    def testCreateAdmins(self):
+        url = '/api/signUp/admin'
+        data = {'email': 'artista1@abc.com',
+                'first_name': 'Artista',
+                'last_name': 'Artista',
+                'username': 'artista1@abc.com',
+                'password': 'artista'
+                }
+        self.client.post(url, data, format='json')
+        artist = User.objects.get(first_name='Artista')
+        self.assertEqual(artist.username, 'artista1@abc.com')

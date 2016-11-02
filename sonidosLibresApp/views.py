@@ -4,6 +4,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.models import User
 from django.http import JsonResponse
 from rest_framework import permissions
+from rest_framework import status
 from rest_framework.authentication import BasicAuthentication, TokenAuthentication
 from rest_framework.authentication import SessionAuthentication
 from rest_framework.authtoken.models import Token
@@ -18,7 +19,7 @@ from rest_framework.views import APIView
 from rest_framework import filters
 from sonidosLibresApp.customPagination import StandardResultsSetPagination
 from sonidosLibresApp.serializers import AudioSerializer, CategorySerializer, AlbumSerializer, CommentarySerializer, \
-    ArtistSerializer, ConvocationSerializer, UserSerializer, ConvocationAudioSerializer
+    ArtistSerializer, ConvocationSerializer, UserSerializer, ConvocationAudioSerializer, AgenteSerializer, AdminSerializer
 from .models import Audio, Category, Album, Commentary, Artist, Convocation
 from datetime import datetime, date, time, timedelta
 from rest_framework.response import Response
@@ -34,6 +35,15 @@ class CustomObtainAuthToken(ObtainAuthToken):
         serializer = UserSerializer(user)
         return Response({'token': token.key, 'id': token.user_id, 'user': serializer.data})
 
+class CreateAdminView(CreateAPIView):
+
+    model = get_user_model()
+    permission_classes = [
+        permissions.AllowAny # Or anon users can't register
+    ]
+    serializer_class = AdminSerializer
+    print(CreateAPIView)
+
 class CreateUserView(CreateAPIView):
 
     model = get_user_model()
@@ -41,6 +51,16 @@ class CreateUserView(CreateAPIView):
         permissions.AllowAny # Or anon users can't register
     ]
     serializer_class = UserSerializer
+    print(CreateAPIView)
+
+class CreateAgentView(CreateAPIView):
+
+    model = get_user_model()
+    permission_classes = [
+        permissions.AllowAny # Or anon users can't register
+    ]
+    serializer_class = AgenteSerializer
+    print(CreateAPIView)
 
 class AudioList(mixins.ListModelMixin, mixins.CreateModelMixin, generics.GenericAPIView):
 
@@ -48,7 +68,7 @@ class AudioList(mixins.ListModelMixin, mixins.CreateModelMixin, generics.Generic
     serializer_class = AudioSerializer
     filter_backends = (filters.DjangoFilterBackend,filters.OrderingFilter,)
     pagination_class = StandardResultsSetPagination
-    filter_fields = ('title', 'rating', 'playCount', 'downloadsCount','uploadDate','numOfRatings', 'categories','albums')
+    filter_fields = ('title', 'rating', 'playCount', 'downloadsCount','uploadDate','numOfRatings', 'categories','albums', 'artists')
     ordering_fields = ('title', 'rating', 'playCount', 'downloadsCount','uploadDate','numOfRatings')
 
     def get(self, request, *args, **kwargs):
@@ -236,7 +256,7 @@ class CategoriesTopRating(APIView):
             cat['id']=c.pk
             cat['name']=c.name
             cat['image'] = c.image
-            audios = Audio.objects.filter(categories__in=[c.pk]).order_by('-rating')
+            audios = Audio.objects.filter(categories__in=[c.pk]).order_by('-rating')[:int(size)]
             audList = []
             var = 0
             for a in audios:
@@ -318,6 +338,23 @@ class ConvocationExpired(APIView):
 
         return JsonResponse(expired, safe=False)
 
+class Registrar(APIView):
+
+    def post(self, request, format=None):
+        serializer = UserSerializer(data=request.data)
+        if serializer.is_valid():
+            if User.objects.filter(username = request.data.get('username')).count()>0:
+                message = 'El username no está disponible'
+                response = JsonResponse({'error': message}, status=409)
+                return response
+            elif User.objects.filter(email = request.data.get('email')):
+                message = 'El correo electrónico ya se encuentra registrado'
+                response = JsonResponse({'error': message}, status=409)
+                return response
+            else:
+              serializer.save()
+              return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 class ConvocationAudioAsociation(APIView):
     def get(self,request,idAudio,idConvocation,format=None):
         audio = Audio.objects.get(id=idAudio)

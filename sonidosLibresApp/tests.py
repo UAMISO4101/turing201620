@@ -1,4 +1,4 @@
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
 from rest_framework import status
 from rest_framework.test import APITestCase
 
@@ -503,6 +503,7 @@ class DownloadAudioTest(APITestCase):
 class CreateUsersTest(APITestCase):
 
     def testCreateArtists(self):
+        g = Group.objects.create(name='artists')
         url = '/api/signUp/artist'
         data = {'email':'artista1@abc.com',
                 'first_name':'Artista',

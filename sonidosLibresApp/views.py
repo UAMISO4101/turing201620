@@ -1,7 +1,7 @@
 from tokenize import Token
 
 from django.contrib.auth import get_user_model
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
 from django.http import JsonResponse
 from rest_framework import permissions
 from rest_framework import status

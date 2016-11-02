@@ -32,7 +32,8 @@ urlpatterns = [
     url(r'^registrar/?$', views.Registrar.as_view()),
     url(r'^convocationExpired/?$',views.ConvocationExpired.as_view()),
     url(r'^convocationAudio/(?P<idAudio>[0-9]+)/(?P<idConvocation>[0-9]+)/?$', views.ConvocationAudioAsociation.as_view()),
-    url(r'^voting/(?P<idConvocationAudio>[0-9]+)/(?P<idArtist>[0-9]+)/?$',views.VotingAudio.as_view())
+    url(r'^voting/(?P<idConvocationAudio>[0-9]+)/(?P<idArtist>[0-9]+)/?$', views.VotingAudio.as_view()),
+    url(r'^convocationAudioDelete/(?P<idConvocationAudio>[0-9]+)/?$', views.ConvocationAudioDelete.as_view())
 
 
 ]

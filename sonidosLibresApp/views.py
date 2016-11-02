@@ -380,7 +380,13 @@ class VotingAudio(APIView):
         convocatioVoting.convocation=convocation
         convocatioVoting.save()
         serializer = ConvocationVotingSerializer(convocatioVoting)
-        #serializer= ConvocationAudioSerializer(convocationAudio)
         return Response(serializer.data)
+
+class ConvocationAudioDelete(APIView):
+    def delete (self,request,idConvocationAudio,format=None):
+        convocatioAudio = ConvocationAudio.objects.get(id=idConvocationAudio)
+        convocatioAudio.delete()
+
+
 
 

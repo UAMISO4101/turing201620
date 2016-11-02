@@ -528,7 +528,6 @@ class CreateUsersTest(APITestCase):
         artist = User.objects.get(first_name='Artista')
         self.assertEqual(artist.username, 'artista1@abc.com')
 
-
     def testCreateAdmins(self):
         url = '/api/signUp/admin'
         self.client.get('/api/createGroups', format='json')

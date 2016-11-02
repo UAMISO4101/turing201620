@@ -19,8 +19,8 @@ from rest_framework.views import APIView
 from rest_framework import filters
 from sonidosLibresApp.customPagination import StandardResultsSetPagination
 from sonidosLibresApp.serializers import AudioSerializer, CategorySerializer, AlbumSerializer, CommentarySerializer, \
-    ArtistSerializer, ConvocationSerializer, UserSerializer, ConvocationAudioSerializer, AgenteSerializer, AdminSerializer
-from .models import Audio, Category, Album, Commentary, Artist, Convocation, ConvocationAudio
+    ArtistSerializer, ConvocationSerializer, UserSerializer, ConvocationAudioSerializer, AgenteSerializer, AdminSerializer, ConvocationVotingSerializer
+from .models import Audio, Category, Album, Commentary, Artist, Convocation, ConvocationAudio,ConvocationVoting
 from datetime import datetime, date, time, timedelta
 from rest_framework.response import Response
 
@@ -366,5 +366,19 @@ class ConvocationAudioAsociation(APIView):
         convocatioAudio.convocation=convocation
         convocatioAudio.save()
         serializer = ConvocationAudioSerializer(convocatioAudio)
+        return Response(serializer.data)
+
+class ConvocationAudioVoting (APIView):
+
+    def get(self,request,idConvocationAudio,idArtist,format=None):
+        convocatioAudio = ConvocationAudio.objects.get(idConvocationAudio)
+        convocatioAudio.votes +=1
+        convocatioAudio.save()
+        convocationVoting=ConvocationVoting()
+        convocationVoting.convocation=convocatioAudio.convocation
+        artist=Artist.objects.get(idArtist)
+        convocationVoting.artist=artist
+        convocationVoting.save()
+        serializer = ConvocationVotingSerializer(convocationVoting)
         return Response(serializer.data)
 

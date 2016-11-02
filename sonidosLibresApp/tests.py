@@ -1,3 +1,4 @@
+from django.contrib.auth.models import User, Group
 from rest_framework import status
 from rest_framework.test import APITestCase
 
@@ -498,3 +499,44 @@ class DownloadAudioTest(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         audio = Audio.objects.get(id=audio.id)
         self.assertEqual(audio.downloadsCount, i + 1)
+
+class CreateUsersTest(APITestCase):
+
+    def testCreateArtists(self):
+        self.client.get('/api/createGroups', format='json')
+        url = '/api/signUp/artist'
+        data = {'email':'artista1@abc.com',
+                'first_name':'Artista',
+                'last_name':'Artista',
+                'username':'artista1@abc.com',
+                'password':'artista'
+                }
+        self.client.post(url, data, format='json')
+        artist = User.objects.get(first_name='Artista')
+        self.assertEqual(artist.username, 'artista1@abc.com')
+
+    def testCreateAgents(self):
+        self.client.get('/api/createGroups', format='json')
+        url = '/api/signUp/agent'
+        data = {'email': 'artista1@abc.com',
+                'first_name': 'Artista',
+                'last_name': 'Artista',
+                'username': 'artista1@abc.com',
+                'password': 'artista'
+                }
+        self.client.post(url, data, format='json')
+        artist = User.objects.get(first_name='Artista')
+        self.assertEqual(artist.username, 'artista1@abc.com')
+
+    def testCreateAdmins(self):
+        url = '/api/signUp/admin'
+        self.client.get('/api/createGroups', format='json')
+        data = {'email': 'artista1@abc.com',
+                'first_name': 'Artista',
+                'last_name': 'Artista',
+                'username': 'artista1@abc.com',
+                'password': 'artista'
+                }
+        self.client.post(url, data, format='json')
+        artist = User.objects.get(first_name='Artista')
+        self.assertEqual(artist.username, 'artista1@abc.com')

@@ -318,26 +318,11 @@ class ConvocationExpired(APIView):
 
         return JsonResponse(expired, safe=False)
 
-class ConvocationAudio(mixins.ListModelMixin, mixins.CreateModelMixin, generics.GenericAPIView):
-
-    queryset = Audio.objects.all()
-    serializer_class = AudioSerializer
-    filter_backends = (filters.DjangoFilterBackend,filters.OrderingFilter,)
-    pagination_class = StandardResultsSetPagination
-    filter_fields = ('title', 'rating', 'playCount', 'downloadsCount','uploadDate','numOfRatings', 'categories','albums')
-    ordering_fields = ('title', 'rating', 'playCount', 'downloadsCount','uploadDate','numOfRatings')
-
-    def get(self, request, *args, **kwargs):
-        return self.list(request, *args, **kwargs)
-
-    def post(self, request, *args, **kwargs):
-        return self.create(request, *args, **kwargs)
-
 class ConvocationAudioAsociation(APIView):
     def get(self,request,idAudio,idConvocation,format=None):
         audio = Audio.objects.get(id=idAudio)
         convocation=Convocation.objects.get(id=idConvocation)
-        convocatioAudio=ConvocationAudio()
+        convocatioAudio = ConvocationAudio()
         convocatioAudio.audio=audio
         convocatioAudio.convocation=convocation
         convocatioAudio.save()

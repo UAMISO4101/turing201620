@@ -1,7 +1,7 @@
 from tokenize import Token
 
 from django.contrib.auth import get_user_model
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
 from django.http import JsonResponse
 from rest_framework import permissions
 from rest_framework import status
@@ -387,13 +387,12 @@ class ConvocationAudioDelete(APIView):
         convocatioAudio = ConvocationAudio.objects.get(id=idConvocationAudio)
         convocatioAudio.delete()
 
-"""class ConvocationAgent(APIView):
-    def get (self,request,idAgent,format=None):
-        convocationAgent:"""
-
-
-
-
-
+class CreateGroups(APIView):
+    def get(self, request):
+        g = Group.objects.create(name='admins')
+        g = Group.objects.create(name='artists')
+        g = Group.objects.create(name='agents')
+        response = JsonResponse({'OK': 'Grupos creados'}, status=200)
+        return response
 
 

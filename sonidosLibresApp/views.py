@@ -387,6 +387,13 @@ class ConvocationAudioDelete(APIView):
         convocatioAudio = ConvocationAudio.objects.get(id=idConvocationAudio)
         convocatioAudio.delete()
 
+"""class ConvocationAgent(APIView):
+    def get (self,request,idAgent,format=None):
+        convocationAgent:"""
+
+
+
+
 
 
 

@@ -5,7 +5,8 @@ from django.contrib.auth.models import User
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.utils import timezone
-from datetime import datetime
+from datetime import datetime, date
+
 
 
 class Category(models.Model):
@@ -108,10 +109,10 @@ class Convocation(models.Model):
     agent = models.ForeignKey(Agent,on_delete=models.CASCADE)
     typeConvocation = models.CharField(max_length=3,choices=typeConvocation_choices,default=public)
     terms = models.TextField(blank=True, null=True)
-    dateInit = models.DateField(default=datetime.now)
-    dateEnd = models.DateField(default=datetime.now)
-    dateLimit = models.DateField(default=datetime.now)
-    dateResults = models.DateField(default=datetime.now)
+    dateInit = models.DateField(default=date.today)
+    dateEnd = models.DateField(default=date.today)
+    dateLimit = models.DateField(default=date.today)
+    dateResults = models.DateField(default=date.today)
     status = models.CharField(max_length=1 ,choices=status_choices ,default=unpublished)
     winner = models.ForeignKey(Artist,on_delete=models.CASCADE,null=True,blank=True)
 

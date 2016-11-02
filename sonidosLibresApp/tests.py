@@ -531,6 +531,7 @@ class CreateUsersTest(APITestCase):
 
     def testCreateAdmins(self):
         url = '/api/signUp/admin'
+        g = Group.objects.create(name='admins')
         data = {'email': 'artista1@abc.com',
                 'first_name': 'Artista',
                 'last_name': 'Artista',

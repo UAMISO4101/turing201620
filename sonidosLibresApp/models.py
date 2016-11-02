@@ -132,4 +132,4 @@ class ConvocationVoting(models.Model):
     # python manage.py migrate
     # python manage.py createsuperuser
     # $ heroku run python manage.py migrate --app sonidoslibres
-    #Migraciones
+    #Migraciones2

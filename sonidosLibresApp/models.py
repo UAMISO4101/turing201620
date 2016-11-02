@@ -14,7 +14,7 @@ class Category(models.Model):
     class Meta:
         verbose_name_plural = "categories"
 
-    name = models.CharField(max_length=40, unique=True)
+    name = models.CharField(max_length=250, unique=True)
     image = models.URLField()
     description = models.TextField()
     relatedCategories = models.ManyToManyField('self',
@@ -27,7 +27,7 @@ class Artist(models.Model):
     class Meta:
         verbose_name_plural = "artists"
 
-    name = models.CharField(max_length=40)
+    name = models.CharField(max_length=250)
     user = models.OneToOneField(User, null=True, blank=True)
     image = models.URLField()
 
@@ -45,7 +45,7 @@ def save_user_profile(sender, instance, **kwargs):
 class Album (models.Model):
     def __str__(self):
         return self.title
-    title = models.CharField(max_length=100)
+    title = models.CharField(max_length=250)
     rating = models.FloatField(editable=False, default = 0)
     numOfRatings = models.IntegerField(editable=False, default = 0)
     categories = models.ManyToManyField(Category,related_name="albums", blank=True)
@@ -55,8 +55,8 @@ class Album (models.Model):
 class Audio(models.Model):
     def __str__(self):
         return self.title + " "+str(self.id)
-    name = models.CharField(max_length=40)
-    title = models.CharField(max_length=40)
+    name = models.CharField(max_length=250)
+    title = models.CharField(max_length=250)
     audioDownload = models.URLField()
     audioPlay = models.URLField()
     playCount = models.IntegerField(editable=False, default = 0)
@@ -85,7 +85,7 @@ class Agent(models.Model):
     class Meta:
         verbose_name_plural = "agents"
 
-    name = models.CharField(max_length=40)
+    name = models.CharField(max_length=250)
     user = models.OneToOneField(User, null=True, blank=True)
     image = models.URLField()
 
@@ -102,8 +102,8 @@ class Convocation(models.Model):
     close='C'
     status_choices= ((unpublished,'Sin Publicar'),(published,'Publicada'),(vote,'En Votacion'),(close,'Cerrada'))
 
-    name = models.CharField(max_length=40)
-    title = models.CharField(max_length=40)
+    name = models.CharField(max_length=250)
+    title = models.CharField(max_length=250)
     detail = models.CharField(max_length=5000)
     agent = models.ForeignKey(Agent,on_delete=models.CASCADE)
     typeConvocation = models.CharField(max_length=3,choices=typeConvocation_choices,default=public)

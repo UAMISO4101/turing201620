@@ -367,6 +367,16 @@ class ConvocationAudioAsociation(APIView):
         serializer = ConvocationAudioSerializer(convocatioAudio)
         return Response(serializer.data)
 
+class ConvocationAudios(APIView):
+    def get(self,request,idConvocation,format=None):
+        audios = []
+        convocationAudios = ConvocationAudio.objects.filter(convocation = idConvocation)
+        for c in convocationAudios:
+            audio = c.audio
+            serializer = AudioSerializer(audio)
+            audios.append(serializer.data)
+        return JsonResponse(audios, safe=False)
+
 class VotingAudio(APIView):
     def get(self,request,idConvocationAudio,idArtist,format=None):
         artist=Artist.objects.get(id=idArtist)

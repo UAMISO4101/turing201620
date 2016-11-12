@@ -1,3 +1,4 @@
+from random import randint
 from tokenize import Token
 
 from django.contrib.auth import get_user_model
@@ -404,5 +405,26 @@ class CreateGroups(APIView):
         response = JsonResponse({'OK': 'Grupos creados'}, status=200)
         return response
 
+class DonationList(mixins.ListModelMixin, mixins.CreateModelMixin, generics.GenericAPIView):
+    queryset = Convocation.objects.all()
+    serializer_class = ConvocationSerializer
+    filter_backends = (filters.DjangoFilterBackend, filters.OrderingFilter,)
+    pagination_class = StandardResultsSetPagination
+    filter_fields = ('date', 'artist', 'donorArtist')
+    ordering_fields = ('date', 'artist', 'donorArtist')
 
+    def get(self, request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)
 
+    def post(self, request, *args, **kwargs):
+        return self.create(request, *args, **kwargs)
+
+class TopRandomArtists(APIView):
+    def get(self,request,size,format=None):
+        resp = []
+        artists = Artist.objects.all()
+        for i in range (0, int(size)):
+            pos = randint(0,artists.count()-1)
+            serializer = ArtistSerializer(artists[pos])
+            resp.append(serializer.data)
+        return JsonResponse(resp, safe=False)

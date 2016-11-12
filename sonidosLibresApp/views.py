@@ -356,6 +356,15 @@ class Registrar(APIView):
               return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+class ConvocationAudios(APIView):
+    def get(self,request,idConvocation,format=None):
+        audios = []
+        convocationAudios = ConvocationAudio.objects.filter(convocation = idConvocation)
+        for c in convocationAudios:
+            audio = c.audio
+            serializer = AudioSerializer(audio)
+            audios.append(serializer.data)
+        return JsonResponse(audios, safe=False)
 
 class ConvocationAudioAsociation(APIView):
     def get(self,request,idAudio,idConvocation,format=None):
@@ -368,15 +377,29 @@ class ConvocationAudioAsociation(APIView):
         serializer = ConvocationAudioSerializer(convocatioAudio)
         return Response(serializer.data)
 
-class ConvocationAudios(APIView):
-    def get(self,request,idConvocation,format=None):
-        audios = []
-        convocationAudios = ConvocationAudio.objects.filter(convocation = idConvocation)
-        for c in convocationAudios:
-            audio = c.audio
-            serializer = AudioSerializer(audio)
-            audios.append(serializer.data)
-        return JsonResponse(audios, safe=False)
+class ConvocationAudioList(mixins.ListModelMixin, mixins.CreateModelMixin, generics.GenericAPIView):
+    queryset = ConvocationAudio.objects.all()
+    serializer_class = ConvocationAudioSerializer
+    filter_backends = (filters.DjangoFilterBackend, filters.OrderingFilter,)
+    pagination_class = StandardResultsSetPagination
+    filter_fields = ('convocation', 'audio', 'votes')
+    ordering_fields = ('convocation', 'audio', 'votes')
+
+    def get(self, request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)
+
+
+class ConvocationAudioDetail(mixins.RetrieveModelMixin, mixins.UpdateModelMixin, mixins.DestroyModelMixin, generics.GenericAPIView):
+    queryset = ConvocationAudio.objects.all()
+    serializer_class = ConvocationAudioSerializer
+
+    def get(self, request, *args, **kwargs):
+        return self.retrieve(request, *args, **kwargs)
+
+    def delete(self, request, *args, **kwargs):
+        return self.destroy(request, *args, **kwargs)
+
+
 
 class VotingAudio(APIView):
     def get(self,request,idConvocationAudio,idArtist,format=None):
@@ -392,10 +415,6 @@ class VotingAudio(APIView):
         serializer = ConvocationVotingSerializer(convocatioVoting)
         return Response(serializer.data)
 
-class ConvocationAudioDelete(APIView):
-    def delete (self,request,idConvocationAudio,format=None):
-        convocatioAudio = ConvocationAudio.objects.get(id=idConvocationAudio)
-        convocatioAudio.delete()
 
 class CreateGroups(APIView):
     def get(self, request):

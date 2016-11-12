@@ -101,7 +101,8 @@ class Convocation(models.Model):
     published='P'
     vote='V'
     close='C'
-    status_choices= ((unpublished,'Sin Publicar'),(published,'Publicada'),(vote,'En Votacion'),(close,'Cerrada'))
+    remove='R'
+    status_choices= ((unpublished,'Sin Publicar'),(published,'Publicada'),(vote,'En Votacion'),(close,'Cerrada'), (remove,'Retirada'))
 
     name = models.CharField(max_length=250)
     title = models.CharField(max_length=250)

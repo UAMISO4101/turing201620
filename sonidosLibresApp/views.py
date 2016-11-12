@@ -20,8 +20,10 @@ from rest_framework.views import APIView
 from rest_framework import filters
 from sonidosLibresApp.customPagination import StandardResultsSetPagination
 from sonidosLibresApp.serializers import AudioSerializer, CategorySerializer, AlbumSerializer, CommentarySerializer, \
-    ArtistSerializer, ConvocationSerializer, UserSerializer, ConvocationAudioSerializer, AgenteSerializer, AdminSerializer, ConvocationVotingSerializer
-from .models import Audio, Category, Album, Commentary, Artist, Convocation, ConvocationAudio,ConvocationVoting
+    ArtistSerializer, ConvocationSerializer, UserSerializer, ConvocationAudioSerializer, AgenteSerializer, AdminSerializer, ConvocationVotingSerializer, \
+    DonationSerializer
+from .models import Audio, Category, Album, Commentary, Artist, Convocation, ConvocationAudio,ConvocationVoting, \
+    Donation
 from datetime import datetime, date, time, timedelta
 from rest_framework.response import Response
 
@@ -425,12 +427,12 @@ class CreateGroups(APIView):
         return response
 
 class DonationList(mixins.ListModelMixin, mixins.CreateModelMixin, generics.GenericAPIView):
-    queryset = Convocation.objects.all()
-    serializer_class = ConvocationSerializer
+    queryset = Donation.objects.all()
+    serializer_class = DonationSerializer
     filter_backends = (filters.DjangoFilterBackend, filters.OrderingFilter,)
     pagination_class = StandardResultsSetPagination
-    filter_fields = ('date', 'artist', 'donorArtist')
-    ordering_fields = ('date', 'artist', 'donorArtist')
+    filter_fields = ('date', 'artistReceived', 'donorArtist', 'amount')
+    ordering_fields = ('date', 'artistReceived', 'donorArtist', 'amount')
 
     def get(self, request, *args, **kwargs):
         return self.list(request, *args, **kwargs)

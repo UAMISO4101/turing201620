@@ -68,6 +68,8 @@ class Audio(models.Model):
     uploadDate = models.DateTimeField(editable=False, default = django.utils.timezone.now)
     albums = models.ManyToManyField(Album, related_name="audios")
     artists = models.ManyToManyField(Artist, related_name="audios")
+    active = models.BooleanField(default=True)
+    vetoed = models.BooleanField(default=False)
 
 class Commentary (models.Model):
     def __str__(self):

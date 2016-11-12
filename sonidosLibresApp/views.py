@@ -62,46 +62,65 @@ class CreateAgentView(CreateAPIView):
     serializer_class = AgenteSerializer
     print(CreateAPIView)
 
+
+def setAudioQuerySet(self):
+    is_admin = False
+    for group in self.request.user.groups.all():
+        if group.name == 'admins':
+            is_admin = True
+            break
+    if not is_admin:
+        queryset=Audio.objects.filter(vetoed=False, active=True)
+    else:
+        queryset = Audio.objects.all()
+    return queryset
+
+
 class AudioList(mixins.ListModelMixin, mixins.CreateModelMixin, generics.GenericAPIView):
 
-    queryset = Audio.objects.all()
     serializer_class = AudioSerializer
     filter_backends = (filters.DjangoFilterBackend,filters.OrderingFilter,)
     pagination_class = StandardResultsSetPagination
-    filter_fields = ('title', 'rating', 'playCount', 'downloadsCount','uploadDate','numOfRatings', 'categories','albums', 'artists')
+    filter_fields = ('title', 'rating', 'playCount', 'downloadsCount','uploadDate','numOfRatings', 'categories','albums', 'artists', 'vetoed', 'active')
     ordering_fields = ('title', 'rating', 'playCount', 'downloadsCount','uploadDate','numOfRatings')
 
     def get(self, request, *args, **kwargs):
+        self.queryset = setAudioQuerySet(self)
         return self.list(request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):
+        self.queryset = setAudioQuerySet(self)
         return self.create(request, *args, **kwargs)
+
 
 class AudioDetail(mixins.RetrieveModelMixin, mixins.UpdateModelMixin, mixins.DestroyModelMixin, generics.GenericAPIView):
 
-    queryset = Audio.objects.all()
     serializer_class = AudioSerializer
 
     def get(self, request, *args, **kwargs):
+        self.queryset = setAudioQuerySet(self)
         return self.retrieve(request, *args, **kwargs)
 
     def put(self, request, *args, **kwargs):
+        self.queryset = setAudioQuerySet(self)
         return self.update(request, *args, **kwargs)
 
     def delete(self, request, *args, **kwargs):
+        self.queryset = setAudioQuerySet(self)
         return self.destroy(request, *args, **kwargs)
+
 
 class ArtistList(mixins.ListModelMixin, mixins.CreateModelMixin, generics.GenericAPIView):
     queryset = Artist.objects.all()
     serializer_class = ArtistSerializer
     pagination_class = StandardResultsSetPagination
 
-
     def get(self, request, *args, **kwargs):
         return self.list(request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):
         return self.create(request, *args, **kwargs)
+
 
 class ArtistDetail(mixins.RetrieveModelMixin, mixins.UpdateModelMixin, mixins.DestroyModelMixin, generics.GenericAPIView):
     queryset = Artist.objects.all()
@@ -120,7 +139,6 @@ class CategoryList(mixins.ListModelMixin, mixins.CreateModelMixin, generics.Gene
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
     pagination_class = StandardResultsSetPagination
-
 
     def get(self, request, *args, **kwargs):
         return self.list(request, *args, **kwargs)
@@ -246,6 +264,7 @@ class DownloadAudio(APIView):
         serializer = AudioSerializer(audio)
         return Response(serializer.data)
 
+
 class CategoriesTopRating(APIView):
     def get(self,request,size,format=None):
         resp = []
@@ -255,7 +274,7 @@ class CategoriesTopRating(APIView):
             cat['id']=c.pk
             cat['name']=c.name
             cat['image'] = c.image
-            audios = Audio.objects.filter(categories__in=[c.pk]).order_by('-rating')[:int(size)]
+            audios = Audio.objects.filter(categories__in=[c.pk], vetoed=False, active=True).order_by('-rating')[:int(size)]
             audList = []
             var = 0
             for a in audios:
@@ -333,9 +352,8 @@ class ConvocationExpired(APIView):
             if dateToday <= c.dateEnd <= dateExprired:
                 expired.append(serializaser.data)
 
-
-
         return JsonResponse(expired, safe=False)
+
 
 class Registrar(APIView):
 

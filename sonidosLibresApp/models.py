@@ -129,6 +129,11 @@ class ConvocationVoting(models.Model):
     convocation=models.ForeignKey(Convocation,on_delete=models.CASCADE)
     artist=models.ForeignKey(Artist,on_delete=models.CASCADE)
 
+class Donation(models.Model):
+    date = models.DateTimeField(editable=False, default = django.utils.timezone.now)
+    artistReceived = models.ForeignKey(Artist,on_delete=models.CASCADE, related_name="receivedDonations")
+    donorArtist = models.ForeignKey(Artist,on_delete=models.CASCADE, related_name="donationsMade")
+    amount = models.FloatField()
 
     # python manage.py makemigrations sonidosLibresApp
     # python manage.py sqlmigrate sonidosLibresApp 0001

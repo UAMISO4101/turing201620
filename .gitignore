@@ -49,9 +49,10 @@ pip-log.txt
 /sonidosLibres/local_settings.py
 /.idea
 
+
 .idea/workspace.xml
 /db.sqlite3
 commands.txt
 schema.sql
 
-
+sonidosLibresApp/migrations/

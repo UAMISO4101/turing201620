@@ -1,3 +1,4 @@
+from random import randint
 from tokenize import Token
 
 from django.contrib.auth import get_user_model
@@ -19,8 +20,10 @@ from rest_framework.views import APIView
 from rest_framework import filters
 from sonidosLibresApp.customPagination import StandardResultsSetPagination
 from sonidosLibresApp.serializers import AudioSerializer, CategorySerializer, AlbumSerializer, CommentarySerializer, \
-    ArtistSerializer, ConvocationSerializer, UserSerializer, ConvocationAudioSerializer, AgenteSerializer, AdminSerializer, ConvocationVotingSerializer
-from .models import Audio, Category, Album, Commentary, Artist, Convocation, ConvocationAudio,ConvocationVoting
+    ArtistSerializer, ConvocationSerializer, UserSerializer, ConvocationAudioSerializer, AgenteSerializer, AdminSerializer, ConvocationVotingSerializer, \
+    DonationSerializer
+from .models import Audio, Category, Album, Commentary, Artist, Convocation, ConvocationAudio,ConvocationVoting, \
+    Donation
 from datetime import datetime, date, time, timedelta
 from rest_framework.response import Response
 
@@ -441,5 +444,26 @@ class CreateGroups(APIView):
         response = JsonResponse({'OK': 'Grupos creados'}, status=200)
         return response
 
+class DonationList(mixins.ListModelMixin, mixins.CreateModelMixin, generics.GenericAPIView):
+    queryset = Donation.objects.all()
+    serializer_class = DonationSerializer
+    filter_backends = (filters.DjangoFilterBackend, filters.OrderingFilter,)
+    pagination_class = StandardResultsSetPagination
+    filter_fields = ('date', 'artistReceived', 'donorArtist', 'amount')
+    ordering_fields = ('date', 'artistReceived', 'donorArtist', 'amount')
 
+    def get(self, request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)
 
+    def post(self, request, *args, **kwargs):
+        return self.create(request, *args, **kwargs)
+
+class TopRandomArtists(APIView):
+    def get(self,request,size,format=None):
+        resp = []
+        artists = Artist.objects.all()
+        for i in range (0, int(size)):
+            pos = randint(0,artists.count()-1)
+            serializer = ArtistSerializer(artists[pos])
+            resp.append(serializer.data)
+        return JsonResponse(resp, safe=False)

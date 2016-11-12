@@ -31,6 +31,11 @@ class Artist(models.Model):
     name = models.CharField(max_length=250)
     user = models.OneToOneField(User, null=True, blank=True)
     image = models.URLField()
+    nickname = models.CharField(max_length=250)
+    date = models.DateField()
+    genere = models.CharField(max_length=200)
+    description = models.TextField()
+
 
 @receiver(post_save, sender=User)
 def create_user_profile(sender, instance, created, **kwargs):

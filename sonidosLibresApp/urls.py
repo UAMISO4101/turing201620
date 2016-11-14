@@ -38,9 +38,8 @@ urlpatterns = [
     url(r'^audiosConvocation/(?P<idConvocation>[0-9]+)/?$', views.ConvocationAudios.as_view()),
     url(r'^voting/(?P<idConvocationAudio>[0-9]+)/(?P<idArtist>[0-9]+)/?$', views.VotingAudio.as_view()),
     url(r'^createGroups/?$', views.CreateGroups.as_view()),
-    #url(r'^convocationAudioDelete/(?P<idConvocationAudio>[0-9]+)/?$', views.ConvocationAudioDelete.as_view()),
-    url(r'^convocationAudios/(?P<idConvocation>[0-9]+)/?$', views.ConvocationAudios.as_view()),
-    url(r'^createGroups/?$', views.CreateGroups.as_view()),
+    url(r'^voting/(?P<idConvocation>[0-9]+)/(?P<idAudio>[0-9]+)/(?P<idArtist>[0-9]+)/?$', views.VotingAudio.as_view()),
+    url(r'^getVote/(?P<idConvocation>[0-9]+)/(?P<idAudio>[0-9]+)/?$', views.GetVote.as_view()),
     url(r'^donations/?$', views.DonationList.as_view()),
     url(r'^topRandomArtists/(?P<size>[0-9]+)/?$', views.TopRandomArtists.as_view()),
 

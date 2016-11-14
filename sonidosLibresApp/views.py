@@ -45,7 +45,6 @@ class CreateAdminView(CreateAPIView):
         permissions.AllowAny # Or anon users can't register
     ]
     serializer_class = AdminSerializer
-    print(CreateAPIView)
 
 class CreateUserView(CreateAPIView):
 
@@ -54,7 +53,6 @@ class CreateUserView(CreateAPIView):
         permissions.AllowAny # Or anon users can't register
     ]
     serializer_class = UserSerializer
-    print(CreateAPIView)
 
 class CreateAgentView(CreateAPIView):
 
@@ -63,7 +61,6 @@ class CreateAgentView(CreateAPIView):
         permissions.AllowAny # Or anon users can't register
     ]
     serializer_class = AgenteSerializer
-    print(CreateAPIView)
 
 class AudioList(mixins.ListModelMixin, mixins.CreateModelMixin, generics.GenericAPIView):
 

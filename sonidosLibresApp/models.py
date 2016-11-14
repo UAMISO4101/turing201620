@@ -35,6 +35,7 @@ class Artist(models.Model):
     date = models.DateField()
     genere = models.CharField(max_length=200)
     description = models.TextField()
+    account = models.CharField(max_length=250)
 
 
 @receiver(post_save, sender=User)
@@ -139,7 +140,7 @@ class Donation(models.Model):
     amount = models.FloatField()
 
     # python manage.py makemigrations sonidosLibresApp
-    # python manage.py sqlmigrate sonidosLibresApp 0001
+    #
     # python manage.py migrate
     # python manage.py createsuperuser
     # $ heroku run python manage.py migrate --app sonidoslibres

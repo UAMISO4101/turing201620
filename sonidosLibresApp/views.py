@@ -419,21 +419,31 @@ class ConvocationAudioDetail(mixins.RetrieveModelMixin, mixins.UpdateModelMixin,
     def delete(self, request, *args, **kwargs):
         return self.destroy(request, *args, **kwargs)
 
-
-
 class VotingAudio(APIView):
-    def get(self,request,idConvocationAudio,idArtist,format=None):
-        artist=Artist.objects.get(id=idArtist)
-        convocationAudio=ConvocationAudio.objects.get(id=idConvocationAudio)
-        convocation = convocationAudio.convocation
-        convocationAudio.votes += 1
-        convocationAudio.save()
-        convocatioVoting = ConvocationVoting()
-        convocatioVoting.artist=artist
-        convocatioVoting.convocation=convocation
-        convocatioVoting.save()
-        serializer = ConvocationVotingSerializer(convocatioVoting)
-        return Response(serializer.data)
+    def get(self,request,idConvocation,idAudio,idArtist,format=None):
+        if ConvocationVoting.objects.filter(convocation=idConvocation,artist=idArtist).count() == 0:
+            convocationAudio = ConvocationAudio.objects.get(convocation=idConvocation,audio=idAudio)
+            convocationAudio.votes += 1
+            convocationAudio.save()
+            convocationVoting = ConvocationVoting()
+            convocation=Convocation.objects.get(id=idConvocation)
+            artist=Artist.objects.get(id=idArtist)
+            convocationVoting.convocation = convocation
+            convocationVoting.artist = artist
+            convocationVoting.save()
+            resp = 0
+            return JsonResponse(resp, safe=False)
+        else:
+            resp = 1
+            return JsonResponse(resp, safe=False)
+
+
+class GetVote(APIView):
+    def get(self,request,idConvocation,idAudio,format=None):
+        convocationAudio = ConvocationAudio.objects.get(convocation=idConvocation,audio=idAudio)
+        serializer = ConvocationAudioSerializer(convocationAudio)
+        resp=convocationAudio.votes
+        return JsonResponse(resp, safe=False)
 
 
 class CreateGroups(APIView):

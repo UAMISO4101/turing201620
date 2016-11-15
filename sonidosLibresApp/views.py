@@ -456,8 +456,8 @@ class DonationList(mixins.ListModelMixin, mixins.CreateModelMixin, generics.Gene
     serializer_class = DonationSerializer
     filter_backends = (filters.DjangoFilterBackend, filters.OrderingFilter,)
     pagination_class = StandardResultsSetPagination
-    filter_fields = ('date', 'artistReceived', 'donorArtist', 'amount')
-    ordering_fields = ('date', 'artistReceived', 'donorArtist', 'amount')
+    filter_fields = ('date', 'idArtist', 'idUser', 'amount')
+    ordering_fields = ('date', 'idArtist', 'idUser', 'amount')
 
     def get(self, request, *args, **kwargs):
         return self.list(request, *args, **kwargs)

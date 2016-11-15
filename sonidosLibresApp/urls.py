@@ -42,6 +42,7 @@ urlpatterns = [
     url(r'^getVote/(?P<idConvocation>[0-9]+)/(?P<idAudio>[0-9]+)/?$', views.GetVote.as_view()),
     url(r'^donations/?$', views.DonationList.as_view()),
     url(r'^topRandomArtists/(?P<size>[0-9]+)/?$', views.TopRandomArtists.as_view()),
+    url(r'^topAlbums/?$', views.TopAlbums.as_view()),
 
 ]
 

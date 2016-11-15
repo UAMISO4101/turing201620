@@ -1,6 +1,6 @@
-import copy
 
 from django.contrib.auth.models import User, Group
+import json
 from rest_framework import serializers
 
 from .models import Audio, Category, Album, Commentary, Artist,Convocation,ConvocationAudio,ConvocationVoting, Donation
@@ -53,10 +53,11 @@ class ConvocationVotingSerializer(serializers.ModelSerializer):
     class Meta:
         model = ConvocationVoting
 
+
+
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ('id', 'username', 'password', 'email', 'first_name', 'last_name','groups',)
         write_only_fields = ('password',)
         read_only_fields = ('id',)
 
@@ -67,9 +68,16 @@ class UserSerializer(serializers.ModelSerializer):
             first_name=validated_data['first_name'],
             last_name=validated_data['last_name'],
         )
-
         user.set_password(validated_data['password'])
         user.save()
+        datos = self.initial_data
+        user.artist.gender = datos['gender']
+        user.artist.account = datos['account']
+        user.artist.description = datos['description']
+        user.artist.birthday = datos['birthday']
+        user.artist.nickname = datos['nickname']
+        user.artist.image = datos['image']
+
         g = Group.objects.get(name='artists')
         g.user_set.add(user)
         g.save()
@@ -80,7 +88,6 @@ class UserSerializer(serializers.ModelSerializer):
 class AdminSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ('id', 'username', 'password', 'email', 'first_name', 'last_name','groups',)
         write_only_fields = ('password',)
         read_only_fields = ('id',)
 
@@ -103,7 +110,6 @@ class AdminSerializer(serializers.ModelSerializer):
 class AgenteSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ('id', 'username', 'password', 'email', 'first_name', 'last_name','groups',)
         write_only_fields = ('password',)
         read_only_fields = ('id',)
 
@@ -124,3 +130,8 @@ class AgenteSerializer(serializers.ModelSerializer):
         return user
 
         return user
+
+class Object:
+    def toJSON(self):
+        return json.dumps(self, default=lambda o: o.__dict__,
+            sort_keys=True, indent=4)

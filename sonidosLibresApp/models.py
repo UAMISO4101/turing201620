@@ -137,11 +137,16 @@ class ConvocationVoting(models.Model):
 
 class Donation(models.Model):
     date = models.DateTimeField(editable=False, default = django.utils.timezone.now)
-    artistReceived = models.ForeignKey(Artist,on_delete=models.CASCADE, related_name="receivedDonations")
-    donorArtist = models.ForeignKey(Artist,on_delete=models.CASCADE, related_name="donationsMade")
+    idArtist = models.ForeignKey(Artist,on_delete=models.CASCADE, related_name="receivedDonations")
+    idUser = models.ForeignKey(Artist,on_delete=models.CASCADE, related_name="donationsMade")
     amount = models.FloatField()
+    franchise = models.CharField(max_length=100)
+    creditCard = models.CharField(max_length=100)
+    creditCardExpirationDate = models.CharField(max_length=100)
+    creditCardOwnerName = models.CharField(max_length=250)
 
     # python manage.py makemigrations sonidosLibresApp
+    # python manage.py sqlmigrate sonidosLibresApp 0001
     # python manage.py migrate
     # python manage.py createsuperuser
     # $ heroku run python manage.py migrate --app sonidoslibres

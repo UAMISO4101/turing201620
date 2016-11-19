@@ -24,7 +24,7 @@ from sonidosLibresApp.serializers import AudioSerializer, CategorySerializer, Al
     DonationSerializer
 from .models import Audio, Category, Album, Commentary, Artist, Convocation, ConvocationAudio,ConvocationVoting, \
     Donation
-from datetime import datetime, date, time, timedelta
+from datetime import datetime, date, time, timedelta, timezone
 from rest_framework.response import Response
 
 def index(request):
@@ -349,7 +349,8 @@ class ConvocationExpired(APIView):
             serializaser = ConvocationSerializer(c)
             if len(expired) == 5:
                 break
-            if dateToday <= c.dateEnd <= dateExprired:
+            dt_aware = timezone.make_aware(c.dateEnd, timezone.get_current_timezone())
+            if dateToday <= dt_aware <= dateExprired:
                 expired.append(serializaser.data)
 
         return JsonResponse(expired, safe=False)

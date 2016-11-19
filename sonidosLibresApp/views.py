@@ -487,6 +487,57 @@ class TopAlbums(APIView):
             if added.get(album.title) is None:
                 resp.append(serializer.data)
                 added[album.title] = 'OK'
-            if(len(resp) >= 4):
+            if(len(resp) >= 8):
                 break
         return JsonResponse(resp, safe=False)
+
+class Search(APIView):
+    def get(self,request,query,format=None):
+        result = {}
+
+        audios = Audio.objects.filter(title__icontains = query)
+        artists = Artist.objects.filter(name__icontains = query)
+        albums = Album.objects.filter(title__icontains = query)
+        categories = Category.objects.filter(name__icontains = query)
+
+        audioSerializer = AudioSerializer(audios, many=True)
+        artistsSerializer = ArtistSerializer(artists, many=True)
+        albumsSerializer = AlbumSerializer(albums, many=True)
+        categoriesSerializer = CategorySerializer(categories, many=True)
+
+        result['audios'] = audioSerializer.data
+        result['artists'] = artistsSerializer.data
+        result['albums'] = albumsSerializer.data
+        result['categories'] = categoriesSerializer.data
+        result['query'] = query
+
+        return JsonResponse(result, safe=False)
+
+class ConvocationAudioVoting(APIView):
+    def get(self,request,pk,format=None):
+        result = {}
+        audios = []
+        convocationAudio = ConvocationAudio.objects.filter(convocation = pk)
+        for cA in convocationAudio:
+            audioA = {}
+            serializer = ConvocationAudioSerializer(cA)
+            audioDataSer = serializer.data
+            audioA['id'] = audioDataSer.get('audio')
+            audioA['votes'] = audioDataSer.get('votes')
+            audio = Audio.objects.get(pk = audioA['id'])
+            audioSer = AudioSerializer(audio)
+            dateSer = audioSer.data
+            audioA['albums'] = dateSer.get('albums')
+            audioA['audioPlay'] = dateSer.get('audioPlay')
+            audioA['title'] = dateSer.get('title')
+            audioA['active'] = dateSer.get('active')
+            audioA['categories'] = dateSer.get('categories')
+            audioA['audioDownload'] = dateSer.get('audioDownload')
+            audioA['name'] = dateSer.get('name')
+            audioA['downloadsCount'] = dateSer.get('downloadsCount')
+            audioA['rating'] = dateSer.get('rating')
+            audioA['categories'] = dateSer.get('categories')
+
+            audios.append(audioA)
+
+        return JsonResponse(audios, safe=False)

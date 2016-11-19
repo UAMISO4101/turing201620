@@ -537,7 +537,15 @@ class ConvocationAudioVoting(APIView):
             audioA['downloadsCount'] = dateSer.get('downloadsCount')
             audioA['rating'] = dateSer.get('rating')
             audioA['categories'] = dateSer.get('categories')
+            audioA['artists'] = dateSer.get('artists')
 
             audios.append(audioA)
 
         return JsonResponse(audios, safe=False)
+
+class Vetar(APIView):
+    def get(self,request,pk,format=None):
+        audio = Audio.objects.get(pk = pk)
+        audio.vetoed = True
+        audio.save()
+        return JsonResponse(AudioSerializer(audio).data, safe=False)

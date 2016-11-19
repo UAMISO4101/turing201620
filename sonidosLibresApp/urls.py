@@ -45,6 +45,7 @@ urlpatterns = [
     url(r'^topAlbums/?$', views.TopAlbums.as_view()),
     url(r'^search/(?P<query>\w+)/?$', views.Search.as_view()),
     url(r'^convocationAudioVoting/(?P<pk>[0-9]+)/?$', views.ConvocationAudioVoting.as_view()),
+    url(r'^vetar/(?P<pk>[0-9]+)/?$', views.Vetar.as_view()),
 ]
 
 #urlpatterns =format_suffix_patterns(urlpatterns)

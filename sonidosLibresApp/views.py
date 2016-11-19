@@ -478,11 +478,15 @@ class TopRandomArtists(APIView):
 class TopAlbums(APIView):
     def get(self,request,format=None):
         resp = []
+        added = {}
         audios = Audio.objects.all().order_by('-audioPlay')
-        for i in range (0, audios.count()-1):
-            album = audios[i].album[0]
+        for i in range (0, audios.count()):
+            audio = audios[i]
+            album = Album.objects.filter(audios__in=[audio.pk])[0]
             serializer = AlbumSerializer(album)
-            resp.append(serializer.data)
+            if added.get(album.title) is None:
+                resp.append(serializer.data)
+                added[album.title] = 'OK'
             if(len(resp) >= 5):
                 break
         return JsonResponse(resp, safe=False)

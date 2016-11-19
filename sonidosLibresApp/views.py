@@ -340,8 +340,8 @@ class ConvocationDetail(mixins.RetrieveModelMixin, mixins.UpdateModelMixin, mixi
 class ConvocationExpired(APIView):
     def get(self,request,format=None):
         max = 5
-        dateToday = date.today()
-        dateExprired = date.today() + timedelta(days=7)
+        dateToday = datetime.now()
+        dateExprired = datetime.now() + timedelta(days=7)
         expired = []
         convocations = Convocation.objects.all()
 

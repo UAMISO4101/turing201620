@@ -31,6 +31,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'sonidosLibresApp',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -38,7 +39,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.sites',
-    'sonidosLibresApp',
     'rest_framework',
     'rest_framework.authtoken',
     'corsheaders',
@@ -142,7 +142,7 @@ USE_L10N = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.10/howto/static-files/
-STATIC_ROOT = "sonidosLibresApp/static"
+STATIC_ROOT = "/sonidosLibresApp/static"
 STATIC_URL = '/static/'
 
 # MEDIA CONFIGURATION

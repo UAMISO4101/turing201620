@@ -487,6 +487,6 @@ class TopAlbums(APIView):
             if added.get(album.title) is None:
                 resp.append(serializer.data)
                 added[album.title] = 'OK'
-            if(len(resp) >= 5):
+            if(len(resp) >= 4):
                 break
         return JsonResponse(resp, safe=False)

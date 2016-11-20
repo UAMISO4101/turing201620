@@ -586,3 +586,27 @@ class ConvocationTest(APITestCase):
         response = self.client.post(url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(Convocation.objects.get().name, 'NombreConvocatoria')
+
+        convocation = Convocation.objects.get(name='NombreConvocatoria')
+        url = '/api/convocations/' + str(convocation.id)
+        data = {
+            "name": "NewNombreConvocatoria",
+            "title": "NewTituloConvocatoria",
+            "detail": "NewDetalle",
+            "typeConvocation": "PRI",
+            "terms": "www.yahoo.com",
+            "dateInit": str(datetime.today()),
+            "dateEnd": str(datetime.today() + timedelta(days=1)),
+            "dateLimit": str(datetime.today() + timedelta(days=2)),
+            "dateResults": str(datetime.today() + timedelta(days=10)),
+            "status": "P",
+            "agent": str(agent.id)
+        }
+        response = self.client.put(url, data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(Convocation.objects.get().name, 'NewNombreConvocatoria')
+
+        response = self.client.delete(url, format='json')
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        response = self.client.get(url, format='json')
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)

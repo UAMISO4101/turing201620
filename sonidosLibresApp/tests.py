@@ -1,11 +1,10 @@
-from unittest import skip
-from django.contrib.auth.models import User, Group
+from django.contrib.auth.models import User
 from rest_framework import status
 from rest_framework.test import APITestCase
+from datetime import datetime, timedelta
+from sonidosLibresApp.models import Category, Audio, Artist, Album, Commentary, Convocation
 
-from sonidosLibresApp.models import Category, Audio, Artist, Album, Commentary
 
-@skip
 class CategoryTest(APITestCase):
 
     def testListCategories(self):
@@ -37,7 +36,8 @@ class CategoryTest(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         response = self.client.get(url, format='json')
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
-@skip
+
+
 class ArtistsTest(APITestCase):
 
     def testListArtists(self):
@@ -68,7 +68,7 @@ class ArtistsTest(APITestCase):
         response = self.client.get(url, format='json')
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
-@skip
+
 class AlbumTest(APITestCase):
 
     def testListAlbums(self):
@@ -120,7 +120,7 @@ class AlbumTest(APITestCase):
         response = self.client.get(url, format='json')
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
-@skip
+
 class AudioTest(APITestCase):
 
     def testListAudios(self):
@@ -188,7 +188,7 @@ class AudioTest(APITestCase):
         response = self.client.get(url, format='json')
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
-@skip
+
 class CommentaryTest(APITestCase):
 
     def testListCommentaries(self):
@@ -259,7 +259,7 @@ class CommentaryTest(APITestCase):
         response = self.client.get(url, format='json')
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
-@skip
+
 class AudioAlbumAssociationTest(APITestCase):
 
     def testAudioAlbumAssociation(self):
@@ -308,7 +308,7 @@ class AudioAlbumAssociationTest(APITestCase):
         response = self.client.delete(url, format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-@skip
+
 class RateAudioTest(APITestCase):
 
     def testRateAudio(self):
@@ -362,7 +362,7 @@ class RateAudioTest(APITestCase):
             self.assertNotEquals(response.status_code, status.HTTP_200_OK)
             i += 1
 
-@skip
+
 class RateAlbumTest(APITestCase):
 
     def testRateAlbum(self):
@@ -403,7 +403,7 @@ class RateAlbumTest(APITestCase):
             self.assertNotEquals(response.status_code, status.HTTP_200_OK)
             i += 1
 
-@skip
+
 class PlayAudioTest(APITestCase):
 
     def testPlayAudio(self):
@@ -452,7 +452,7 @@ class PlayAudioTest(APITestCase):
         audio = Audio.objects.get(id=audio.id)
         self.assertEqual(audio.playCount, i + 1)
 
-@skip
+
 class DownloadAudioTest(APITestCase):
 
     def testDownloadAudio(self):
@@ -501,44 +501,88 @@ class DownloadAudioTest(APITestCase):
         audio = Audio.objects.get(id=audio.id)
         self.assertEqual(audio.downloadsCount, i + 1)
 
-@skip
+
 class CreateUsersTest(APITestCase):
 
     def testCreateArtists(self):
         self.client.get('/api/createGroups', format='json')
         url = '/api/signUp/artist'
-        data = {'email':'artista1@abc.com',
-                'first_name':'Artista',
-                'last_name':'Artista',
-                'username':'artista1@abc.com',
-                'password':'artista'
+        data = {'email': 'artista1@abc.com',
+                'first_name': 'ArtistaNombre',
+                'last_name': 'ArtistaApellido',
+                'username': 'artista1@abc.com',
+                'password': 'artista',
+                'gender': 'M',
+                'account': '123456789',
+                'description': 'abcd efgh ijkl',
+                'birthday': '2000-01-01',
+                'nickname': 'artist',
+                'image': 'www.yahoo.com'
                 }
         self.client.post(url, data, format='json')
-        artist = User.objects.get(first_name='Artista')
+        artist = User.objects.get(first_name='ArtistaNombre')
         self.assertEqual(artist.username, 'artista1@abc.com')
 
     def testCreateAgents(self):
         self.client.get('/api/createGroups', format='json')
         url = '/api/signUp/agent'
         data = {'email': 'artista1@abc.com',
-                'first_name': 'Artista',
-                'last_name': 'Artista',
-                'username': 'artista1@abc.com',
-                'password': 'artista'
+                'first_name': 'Agent',
+                'last_name': 'Agent',
+                'username': 'agent1@abc.com',
+                'password': 'agent'
                 }
         self.client.post(url, data, format='json')
-        artist = User.objects.get(first_name='Artista')
-        self.assertEqual(artist.username, 'artista1@abc.com')
+        agent = User.objects.get(first_name='Agent')
+        self.assertEqual(agent.username, 'agent1@abc.com')
 
     def testCreateAdmins(self):
         url = '/api/signUp/admin'
         self.client.get('/api/createGroups', format='json')
-        data = {'email': 'artista1@abc.com',
-                'first_name': 'Artista',
-                'last_name': 'Artista',
-                'username': 'artista1@abc.com',
-                'password': 'artista'
+        data = {'email': 'admin1@abc.com',
+                'first_name': 'Admin',
+                'last_name': 'Admin',
+                'username': 'admin1@abc.com',
+                'password': 'admin'
                 }
         self.client.post(url, data, format='json')
-        artist = User.objects.get(first_name='Artista')
-        self.assertEqual(artist.username, 'artista1@abc.com')
+        admin = User.objects.get(first_name='Admin')
+        self.assertEqual(admin.username, 'admin1@abc.com')
+
+
+class ConvocationTest(APITestCase):
+
+    def testListConvocation(self):
+        url = '/api/convocations'
+        response = self.client.get(url, format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def testDetailConvocation(self):
+        self.client.get('/api/createGroups', format='json')
+        url = '/api/signUp/agent'
+        data = {'email': 'artista1@abc.com',
+                'first_name': 'Agent',
+                'last_name': 'Agent',
+                'username': 'agent1@abc.com',
+                'password': 'agent'
+                }
+        self.client.post(url, data, format='json')
+        agent = User.objects.get(first_name='Agent')
+
+        url = '/api/convocations/'
+        data = {
+            "name": "NombreConvocatoria",
+            "title": "TituloConvocatoria",
+            "detail": "Detalle",
+            "typeConvocation": "PUB",
+            "terms": "www.google.com",
+            "dateInit": str(datetime.today()),
+            "dateEnd": str(datetime.today() + timedelta(days=1)),
+            "dateLimit": str(datetime.today() + timedelta(days=2)),
+            "dateResults": str(datetime.today() + timedelta(days=10)),
+            "status": "U",
+            "agent": str(agent.id)
+        }
+        response = self.client.post(url, data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(Convocation.objects.get().name, 'NombreConvocatoria')

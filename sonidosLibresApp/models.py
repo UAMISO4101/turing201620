@@ -85,7 +85,7 @@ class Commentary (models.Model):
     commentary = models.TextField()
     date = models.DateTimeField(editable=False, default=django.utils.timezone.now)
     audio = models.ForeignKey(Audio,on_delete=models.CASCADE)
-    user = models.OneToOneField(User, null=True, blank=True)
+    user = models.ForeignKey(User, null=True, blank=True)
 
 class Agent(models.Model):
     def __str__(self):

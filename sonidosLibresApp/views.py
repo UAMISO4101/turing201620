@@ -190,6 +190,10 @@ class AlbumDetail(mixins.RetrieveModelMixin, mixins.UpdateModelMixin, mixins.Des
 class CommentaryList(mixins.ListModelMixin, mixins.CreateModelMixin, generics.GenericAPIView):
     queryset = Commentary.objects.all()
     serializer_class = CommentarySerializer
+    filter_backends = (filters.DjangoFilterBackend, filters.OrderingFilter,)
+    pagination_class = StandardResultsSetPagination
+    filter_fields = ('audio', 'user', 'date')
+    ordering_fields = ('audio', 'user', 'date')
 
     def get(self, request, *args, **kwargs):
         return self.list(request, *args, **kwargs)

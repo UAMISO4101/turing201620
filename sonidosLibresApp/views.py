@@ -399,6 +399,13 @@ class ConvocationAudioAsociation(APIView):
         serializer = ConvocationAudioSerializer(convocatioAudio)
         return Response(serializer.data)
 
+    def delete(self, request, idAudio, idConvocation, format=None):
+        convocationAsociation = ConvocationAudio.objects.get(audio=idAudio, convocation=idConvocation)
+        convocationAsociation.delete()
+        resp = 1
+
+        return JsonResponse(resp, safe=False)
+
 class ConvocationAudioList(mixins.ListModelMixin, mixins.CreateModelMixin, generics.GenericAPIView):
     queryset = ConvocationAudio.objects.all()
     serializer_class = ConvocationAudioSerializer
